@@ -8,7 +8,7 @@ class MessageController(
     private val messageRepo: MessageRepo
 ) {
 
-    @RequestMapping("/api/greet")
+    @RequestMapping("/")
     fun helloWorld(): List<Message> {
         return messageRepo.findAll()
     }
