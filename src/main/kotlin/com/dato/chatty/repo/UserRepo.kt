@@ -4,4 +4,7 @@ import com.dato.chatty.model.User
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface UserRepo : MongoRepository<User, String> {
+
+    fun findByEmail(email: String): User?
+
 }

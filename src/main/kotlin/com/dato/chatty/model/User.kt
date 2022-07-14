@@ -8,4 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class User(
     @Id
     val id: ObjectId = ObjectId.get(),
-    val text: String)
+    val email: String,
+    val roles: Set<Role>
+)
