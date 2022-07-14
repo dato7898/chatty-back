@@ -29,12 +29,13 @@ class SecurityConfig(
                     .antMatchers("/private/**").hasAuthority(Role.ADMIN.name)
                     .anyRequest().authenticated()
             }
-            .logout().clearAuthentication(true)
-            .deleteCookies().invalidateHttpSession(true)
-            .and()
-            .oauth2Login()
-            .userInfoEndpoint()
-            .oidcUserService(oidcUserService())
+            .logout()
+                .clearAuthentication(true)
+                .deleteCookies()
+                .invalidateHttpSession(true)
+            .and().oauth2Login()
+                .userInfoEndpoint()
+                    .oidcUserService(oidcUserService())
         return http.build()
     }
 
