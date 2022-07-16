@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class HttpCookieOAuth2AuthorizationRequestRepository :
     AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest {
+    override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest? {
         return CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
             .map { cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest::class.java) }
             .orElse(null)

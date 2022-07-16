@@ -2,6 +2,7 @@ package com.dato.chatty.config
 
 import com.dato.chatty.model.Role
 import com.dato.chatty.security.CustomOidcUserService
+import com.dato.chatty.security.RestAuthenticationEntryPoint
 import com.dato.chatty.security.TokenAuthenticationFilter
 import com.dato.chatty.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import com.dato.chatty.security.oauth2.OAuth2AuthenticationSuccessHandler
@@ -32,7 +33,9 @@ class SecurityConfig(
                 .disable()
             .httpBasic()
                 .disable()
-            .authorizeHttpRequests { authz ->
+            .exceptionHandling()
+                .authenticationEntryPoint(RestAuthenticationEntryPoint())
+            .and().authorizeHttpRequests { authz ->
                 authz
                     .antMatchers("/private/**").hasAuthority(Role.ADMIN.name)
                     .anyRequest().authenticated()
