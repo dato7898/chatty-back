@@ -43,11 +43,6 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
         return loadAuthorizationRequest(request)
     }
 
-    fun removeAuthorizationRequestCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
-    }
-
     companion object {
         const val OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request"
         const val REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri"

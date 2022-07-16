@@ -23,14 +23,14 @@ class TokenProvider {
         val now = Date()
         val expiryDate = Date(now.time + tokenExpirationMsec)
         return Jwts.builder()
-            .setSubject(userPrincipal.name)
+            .setSubject(userPrincipal.email)
             .setIssuedAt(Date())
             .setExpiration(expiryDate)
             .signWith(SignatureAlgorithm.HS512, tokenSecret)
             .compact()
     }
 
-    fun getUserNameFromToken(token: String): String {
+    fun getUserNameFromToken(token: String?): String {
         val claims: Claims = Jwts.parser()
             .setSigningKey(tokenSecret)
             .parseClaimsJws(token)

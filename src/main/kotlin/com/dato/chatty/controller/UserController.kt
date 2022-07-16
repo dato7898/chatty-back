@@ -13,7 +13,7 @@ class UserController {
 
     @RequestMapping("/private")
     fun private(): String {
-        return "Private"
+        return "{\"Private\":\"Private\"}"
     }
 
     @MessageMapping("/hello")
