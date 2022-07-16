@@ -21,12 +21,20 @@ class CustomOidcUserService(
     override fun loadUser(userRequest: OidcUserRequest): OidcUser {
         var oidcUser = super.loadUser(userRequest)
         val email = oidcUser.attributes["email"].toString()
+        val firstname = oidcUser.attributes["given_name"].toString()
+        val lastname = oidcUser.attributes["family_name"].toString()
 
         val userOpt = userRepo.findByEmail(email)
         val user: User = if (userOpt.isPresent) {
             userOpt.get()
         } else {
-            userRepo.save(User(ObjectId.get(), email, setOf(Role.USER)))
+            userRepo.save(User(
+                ObjectId.get(),
+                email,
+                firstname,
+                lastname,
+                setOf(Role.USER)
+            ))
         }
 
         val mappedAuthorities = user.roles.map {
@@ -38,9 +46,8 @@ class CustomOidcUserService(
     }
 
     fun loadUserByName(name: String): UserDetails {
-
         val user = userRepo.findByEmail(name).orElseThrow {
-            ResourceNotFoundException("User", "id", name)
+            ResourceNotFoundException("User", "name", name)
         }
         return UserPrincipal.create(user)
     }

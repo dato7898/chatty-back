@@ -1,6 +1,5 @@
 package com.dato.chatty.config
 
-import com.dato.chatty.model.Role
 import com.dato.chatty.security.CustomOidcUserService
 import com.dato.chatty.security.RestAuthenticationEntryPoint
 import com.dato.chatty.security.TokenAuthenticationFilter
@@ -37,7 +36,6 @@ class SecurityConfig(
                 .authenticationEntryPoint(RestAuthenticationEntryPoint())
             .and().authorizeHttpRequests { authz ->
                 authz
-                    .antMatchers("/private/**").hasAuthority(Role.ADMIN.name)
                     .anyRequest().authenticated()
             }
             .logout()
