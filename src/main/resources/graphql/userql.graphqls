@@ -1,0 +1,13 @@
+type User {
+    id: ID,
+    email: String,
+    firstname: String,
+    lastname: String,
+    roles: [String],
+    friendIds: [String]
+}
+type Query {
+    me: User,
+    myFriends: [User],
+    friendsById(id: ID): [User]
+}

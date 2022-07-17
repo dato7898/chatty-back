@@ -18,20 +18,20 @@ class UserController(
 ) {
 
     @GetMapping("me")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     fun getCurrentUser(@CurrentUser userPrincipal: UserPrincipal): User {
         return userService.findByEmail(userPrincipal.name)
             .orElseThrow{ ResourceNotFoundException("User", "name", userPrincipal.name) }
     }
 
     @GetMapping("me/friends")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     fun getCurrentFriends(@CurrentUser userPrincipal: UserPrincipal): List<User> {
         return userService.findFriends(userPrincipal.name)
     }
 
     @GetMapping("{userId}/friends")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     fun getUserFriends(@PathVariable userId: String): List<User> {
         return userService.findFriendsById(userId)
     }
