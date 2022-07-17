@@ -4,6 +4,7 @@ import com.dato.chatty.security.CustomOidcUserService
 import com.dato.chatty.security.RestAuthenticationEntryPoint
 import com.dato.chatty.security.TokenAuthenticationFilter
 import com.dato.chatty.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
+import com.dato.chatty.security.oauth2.OAuth2AuthenticationFailureHandler
 import com.dato.chatty.security.oauth2.OAuth2AuthenticationSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val customOidcUserService: CustomOidcUserService,
     private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oAuth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler,
     private val tokenAuthenticationFilter: TokenAuthenticationFilter
 
 ) {
@@ -50,6 +52,7 @@ class SecurityConfig(
                 .and().userInfoEndpoint()
                     .oidcUserService(customOidcUserService)
                     .and().successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler)
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }

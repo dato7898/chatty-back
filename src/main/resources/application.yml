@@ -19,3 +19,5 @@ app:
     tokenExpirationMsec: ${TOKEN_EXPIRATION_MSEC}
   cors:
     allowedOrigins: ${ALLOWED_ORIGINS}
+  oauth2:
+    authorizedRedirectUris: ${AUTHORIZED_REDIRECT_URIS}
