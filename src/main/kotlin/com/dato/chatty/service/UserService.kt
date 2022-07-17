@@ -14,4 +14,18 @@ class UserService(
         return userRepo.findByEmail(email)
     }
 
+    fun update(user: User) {
+        userRepo.save(user)
+    }
+
+    fun findFriends(email: String): List<User> {
+        val user = userRepo.findByEmail(email).orElseThrow{ RuntimeException() }
+        return userRepo.findAllByIdInAndFriendIds(user.friendIds, user.id)
+    }
+
+    fun findFriendsById(userId: String): List<User> {
+        val user = userRepo.findById(userId).orElseThrow{ RuntimeException() }
+        return userRepo.findAllByIdInAndFriendIds(user.friendIds, user.id)
+    }
+
 }

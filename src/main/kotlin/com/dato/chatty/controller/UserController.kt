@@ -7,18 +7,33 @@ import com.dato.chatty.security.UserPrincipal
 import com.dato.chatty.service.UserService
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("user")
 class UserController(
     private val userService: UserService
 ) {
 
-    @GetMapping("/user/me")
+    @GetMapping("me")
     @PreAuthorize("hasRole('USER')")
     fun getCurrentUser(@CurrentUser userPrincipal: UserPrincipal): User {
         return userService.findByEmail(userPrincipal.name)
             .orElseThrow{ ResourceNotFoundException("User", "name", userPrincipal.name) }
+    }
+
+    @GetMapping("me/friends")
+    @PreAuthorize("hasRole('USER')")
+    fun getCurrentFriends(@CurrentUser userPrincipal: UserPrincipal): List<User> {
+        return userService.findFriends(userPrincipal.name)
+    }
+
+    @GetMapping("{userId}/friends")
+    @PreAuthorize("hasRole('USER')")
+    fun getUserFriends(@PathVariable userId: String): List<User> {
+        return userService.findFriendsById(userId)
     }
 
 }

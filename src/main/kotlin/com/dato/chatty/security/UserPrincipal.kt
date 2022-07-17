@@ -6,7 +6,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.user.OAuth2User
 
-
 class UserPrincipal(
     private val email: String,
     private val authorities: Collection<GrantedAuthority>
@@ -63,12 +62,6 @@ class UserPrincipal(
                 user.email,
                 mappedAuthorities
             )
-        }
-
-        fun create(user: User, attributes: Map<String, Any>?): UserPrincipal {
-            val userPrincipal = create(user)
-            userPrincipal.setAttributes(attributes)
-            return userPrincipal
         }
     }
 }

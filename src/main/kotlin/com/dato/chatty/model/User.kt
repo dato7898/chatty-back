@@ -1,15 +1,13 @@
 package com.dato.chatty.model
 
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class User(
+data class User(var email: String, var firstname: String, var lastname: String, var roles: Set<Role>) {
+
     @Id
-    val id: ObjectId = ObjectId.get(),
-    val email: String,
-    val firstname: String,
-    val lastname: String,
-    val roles: Set<Role>
-)
+    var id: String? = null
+    var friendIds: Set<String> = HashSet()
+
+}

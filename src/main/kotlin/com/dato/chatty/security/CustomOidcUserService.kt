@@ -4,7 +4,6 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Role
 import com.dato.chatty.model.User
 import com.dato.chatty.repo.UserRepo
-import org.bson.types.ObjectId
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest
@@ -29,7 +28,6 @@ class CustomOidcUserService(
             userOpt.get()
         } else {
             userRepo.save(User(
-                ObjectId.get(),
                 email,
                 firstname,
                 lastname,

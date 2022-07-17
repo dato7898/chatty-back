@@ -36,6 +36,7 @@ class SecurityConfig(
                 .authenticationEntryPoint(RestAuthenticationEntryPoint())
             .and().authorizeHttpRequests { authz ->
                 authz
+                    .antMatchers("/v2/api-docs/**").permitAll()
                     .anyRequest().authenticated()
             }
             .logout()
