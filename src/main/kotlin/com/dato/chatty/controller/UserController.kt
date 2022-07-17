@@ -5,6 +5,7 @@ import com.dato.chatty.model.User
 import com.dato.chatty.security.CurrentUser
 import com.dato.chatty.security.UserPrincipal
 import com.dato.chatty.service.UserService
+import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,13 +28,13 @@ class UserController(
     @GetMapping("me/friends")
     @PreAuthorize("hasAuthority('USER')")
     fun getCurrentFriends(@CurrentUser userPrincipal: UserPrincipal): List<User> {
-        return userService.findFriends(userPrincipal.name)
+        return userService.findFriends(userPrincipal.name, Pageable.unpaged())
     }
 
     @GetMapping("{userId}/friends")
     @PreAuthorize("hasAuthority('USER')")
     fun getUserFriends(@PathVariable userId: String): List<User> {
-        return userService.findFriendsById(userId)
+        return userService.findFriendsById(userId, Pageable.unpaged())
     }
 
 }

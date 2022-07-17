@@ -6,8 +6,10 @@ type User {
     roles: [String],
     friendIds: [String]
 }
+
 type Query {
     me: User,
-    myFriends: [User],
-    friendsById(id: ID): [User]
+    myFriends(pageNum: Int, pageSize: Int): [User],
+    friendsById(id: ID, pageNum: Int, pageSize: Int): [User]
+    usersBySearch(search: String, pageNum: Int, pageSize: Int): [User]
 }
