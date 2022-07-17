@@ -28,6 +28,11 @@ class UserQueryResolver(
     }
 
     @PreAuthorize("hasAuthority('USER')")
+    fun getFriendRequests(pageNum: Int, pageSize: Int): List<User> {
+        return userService.getFriendRequests(PageRequest.of(pageNum, pageSize))
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
     fun getUsersBySearch(search: String, pageNum: Int, pageSize: Int): List<User> {
         return userService.findUsers(search, PageRequest.of(pageNum, pageSize))
     }

@@ -8,6 +8,6 @@ data class User(var email: String, var firstname: String, var lastname: String, 
 
     @Id
     var id: String? = null
-    var friendIds: Set<String> = HashSet()
+    var friendIds: HashSet<String> = HashSet()
 
 }

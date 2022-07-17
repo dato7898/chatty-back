@@ -1,8 +1,8 @@
 package com.dato.chatty.service
 
+import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.User
 import com.dato.chatty.repo.UserRepo
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
@@ -21,7 +21,7 @@ class UserService(
             .map(SecurityContext::getAuthentication)
             .map(Authentication::getName)
             .flatMap(userRepo::findByEmail)
-            .orElseThrow { RuntimeException() }
+            .orElseThrow { ResourceNotFoundException("User", "email", "") }
     }
 
     fun findByEmail(email: String): Optional<User> {
@@ -42,11 +42,30 @@ class UserService(
         return userRepo.findAllByIdInAndFriendIds(user.friendIds, user.id, page)
     }
 
+    fun getFriendRequests(page: Pageable): List<User> {
+        val user = getCurrentUser()
+        return userRepo.findAllByFriendIdsAndIdNotIn(user.id, user.friendIds, page)
+    }
+
     fun findUsers(search: String, page: Pageable): List<User> {
         val searches = search.split(Pattern.compile("\\s+")).map {
             Pattern.compile(".*$it.*")
         }.toSet()
         return userRepo.findUsers(searches, page)
+    }
+
+    fun addFriend(userId: String): User {
+        val currentUser = getCurrentUser()
+        userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        currentUser.friendIds.add(userId)
+        return userRepo.save(currentUser)
+    }
+
+    fun deleteFriend(userId: String): User {
+        val currentUser = getCurrentUser()
+        userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        currentUser.friendIds.remove(userId)
+        return userRepo.save(currentUser)
     }
 
 }
