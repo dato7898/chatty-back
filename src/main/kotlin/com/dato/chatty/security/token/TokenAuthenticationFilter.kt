@@ -1,5 +1,6 @@
-package com.dato.chatty.security
+package com.dato.chatty.security.token
 
+import com.dato.chatty.security.CustomOidcUserService
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder

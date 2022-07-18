@@ -1,7 +1,7 @@
-package com.dato.chatty.config
+package com.dato.chatty.security.websocket
 
 import com.dato.chatty.security.CustomOidcUserService
-import com.dato.chatty.security.TokenProvider
+import com.dato.chatty.security.token.TokenProvider
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.stomp.StompCommand

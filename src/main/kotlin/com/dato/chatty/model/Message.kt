@@ -5,12 +5,13 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
 data class Message(
-    val senderId: String,
-    val roomId: String,
-    val text: String
+    var senderId: String?,
+    var roomId: String?,
+    var text: String
 ) {
 
     @Id
     val id: String? = null
+    var deleted: Boolean = false
 
 }

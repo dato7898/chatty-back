@@ -2,7 +2,7 @@ package com.dato.chatty.config
 
 import com.dato.chatty.security.CustomOidcUserService
 import com.dato.chatty.security.RestAuthenticationEntryPoint
-import com.dato.chatty.security.TokenAuthenticationFilter
+import com.dato.chatty.security.token.TokenAuthenticationFilter
 import com.dato.chatty.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository
 import com.dato.chatty.security.oauth2.OAuth2AuthenticationFailureHandler
 import com.dato.chatty.security.oauth2.OAuth2AuthenticationSuccessHandler

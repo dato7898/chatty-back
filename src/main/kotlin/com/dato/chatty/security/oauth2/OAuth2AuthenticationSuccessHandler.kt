@@ -1,7 +1,7 @@
 package com.dato.chatty.security.oauth2
 
 import com.dato.chatty.exception.BadRequestException
-import com.dato.chatty.security.TokenProvider
+import com.dato.chatty.security.token.TokenProvider
 import com.dato.chatty.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.Companion.REDIRECT_URI_PARAM_COOKIE_NAME
 import com.dato.chatty.util.CookieUtils
 import org.springframework.beans.factory.annotation.Value

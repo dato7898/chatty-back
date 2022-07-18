@@ -22,15 +22,21 @@ class CustomOidcUserService(
         val email = oidcUser.attributes["email"].toString()
         val firstname = oidcUser.attributes["given_name"].toString()
         val lastname = oidcUser.attributes["family_name"].toString()
+        val googleImgUrl = oidcUser.attributes["picture"].toString()
 
         val userOpt = userRepo.findByEmail(email)
         val user: User = if (userOpt.isPresent) {
-            userOpt.get()
+            val oldUser = userOpt.get()
+            oldUser.firstname = firstname
+            oldUser.lastname = lastname
+            oldUser.googleImgUrl = googleImgUrl
+            userRepo.save(oldUser)
         } else {
             userRepo.save(User(
                 email,
                 firstname,
                 lastname,
+                googleImgUrl,
                 setOf(Role.USER)
             ))
         }

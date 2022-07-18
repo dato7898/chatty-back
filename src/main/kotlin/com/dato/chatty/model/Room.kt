@@ -9,4 +9,5 @@ class Room {
     var id: String? = null
     var userIds: HashSet<String?> = HashSet()
     var isMultiChat: Boolean = false
+    var deleted: Boolean = false
 }

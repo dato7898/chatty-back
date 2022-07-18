@@ -16,7 +16,7 @@ class RoomService(
     fun getRoomWithUser(userId: String): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        return roomRepo.findRoomWithUsers(setOf(curUser.id, userId))
+        return roomRepo.findRoomWithUser(setOf(curUser.id, userId))
             .orElseGet {
                 val room = Room()
                 room.userIds = hashSetOf(curUser.id, userId)

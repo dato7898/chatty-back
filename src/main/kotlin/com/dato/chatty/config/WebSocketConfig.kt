@@ -1,5 +1,6 @@
 package com.dato.chatty.config
 
+import com.dato.chatty.security.websocket.AuthChannelInterceptorAdapter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered

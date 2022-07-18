@@ -1,4 +1,4 @@
-package com.dato.chatty.security
+package com.dato.chatty.security.token
 
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.SignatureException
