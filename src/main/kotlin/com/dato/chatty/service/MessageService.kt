@@ -3,11 +3,15 @@ package com.dato.chatty.service
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
+import org.springframework.core.task.SimpleAsyncTaskExecutor
 import org.springframework.data.domain.Pageable
 import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.messaging.simp.user.SimpUser
 import org.springframework.messaging.simp.user.SimpUserRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.util.HtmlUtils
+import java.util.stream.Collectors
 
 @Service
 class MessageService(
@@ -15,7 +19,8 @@ class MessageService(
     private val roomService: RoomService,
     private val userService: UserService,
     private val simpUserRegistry: SimpUserRegistry,
-    private val simpMessagingTemplate: SimpMessagingTemplate
+    private val simpMessagingTemplate: SimpMessagingTemplate,
+    private val taskExecutor: SimpleAsyncTaskExecutor
 ) {
 
     @Transactional
@@ -33,7 +38,9 @@ class MessageService(
         val room = roomService.getRoomWithUser(userId)
         message.roomId = room.id
         message.senderId = curUser.id
-        return messageRepo.save(message)
+        val newMessage = messageRepo.save(message)
+        taskExecutor.execute { sendWebsocketMessage(curUser.email, message.text, room.id) }
+        return newMessage
     }
 
     @Transactional
@@ -46,6 +53,18 @@ class MessageService(
             throw RuntimeException("Operation not allowed")
         }
         messageRepo.delete(message)
+    }
+
+    fun sendWebsocketMessage(email: String, message: String, roomId: String?) {
+            val subscribers = simpUserRegistry.users.stream()
+                .map(SimpUser::getName)
+                .filter { email != it }
+                .collect(Collectors.toList())
+
+            subscribers.forEach {
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId",
+                    "Hello, " + HtmlUtils.htmlEscape(message) + "!")
+            }
     }
 
 }

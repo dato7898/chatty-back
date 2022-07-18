@@ -8,6 +8,17 @@ type User {
     friendIds: [String]
 }
 
+type Message {
+    id: ID,
+    senderId: String,
+    roomId: String,
+    text: String
+}
+
+input MetaMessage {
+    text: String
+}
+
 type Query {
     me: User,
     myFriends(pageNum: Int, pageSize: Int): [User],
@@ -19,4 +30,6 @@ type Query {
 type Mutation {
     addFriend(userId: ID): User,
     deleteFriend(userId: ID): User
+
+    addMessageToUser(message: MetaMessage, userId: String): Message
 }
