@@ -15,6 +15,12 @@ type Message {
     text: String
 }
 
+type Room {
+    id: ID,
+    userIds: [String],
+    isMultiChat: Boolean
+}
+
 input MetaMessage {
     text: String
 }
@@ -25,6 +31,10 @@ type Query {
     friendsById(id: ID, pageNum: Int, pageSize: Int): [User]
     friendRequests(pageNum: Int, pageSize: Int): [User],
     usersBySearch(search: String, pageNum: Int, pageSize: Int): [User]
+
+    roomByUserId(userId: String): Room
+
+    messagesByUserId(userId: String, pageNum: Int, pageSize: Int): [Message]
 }
 
 type Mutation {
