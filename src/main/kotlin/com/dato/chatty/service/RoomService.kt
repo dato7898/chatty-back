@@ -24,4 +24,11 @@ class RoomService(
             }
     }
 
+    @Transactional
+    fun checkUserInRoom(roomId: String, email: String): Boolean {
+        val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
+        val room = roomRepo.findByIdAndUserIds(roomId, user.id)
+        return room.isPresent
+    }
+
 }

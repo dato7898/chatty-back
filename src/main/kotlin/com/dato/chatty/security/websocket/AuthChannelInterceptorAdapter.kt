@@ -2,6 +2,7 @@ package com.dato.chatty.security.websocket
 
 import com.dato.chatty.security.CustomOidcUserService
 import com.dato.chatty.security.token.TokenProvider
+import com.dato.chatty.service.RoomService
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.stomp.StompCommand
@@ -15,7 +16,8 @@ import org.springframework.util.StringUtils
 @Component
 class AuthChannelInterceptorAdapter(
     private val tokenProvider: TokenProvider,
-    private val customOidcUserService: CustomOidcUserService
+    private val customOidcUserService: CustomOidcUserService,
+    private val roomService: RoomService
 ) : ChannelInterceptor {
 
     override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
