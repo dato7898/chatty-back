@@ -3,6 +3,7 @@ type User {
     email: String,
     firstname: String,
     lastname: String,
+    googleImgUrl: String,
     roles: [String],
     friendIds: [String]
 }
