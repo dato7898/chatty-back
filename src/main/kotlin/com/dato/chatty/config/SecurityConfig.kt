@@ -42,6 +42,7 @@ class SecurityConfig(
                 .authenticationEntryPoint(RestAuthenticationEntryPoint())
             .and().authorizeHttpRequests { authz ->
                 authz
+                    .antMatchers("/ws/**").permitAll()
                     .antMatchers("/v2/api-docs/**").permitAll()
                     .anyRequest().authenticated()
             }

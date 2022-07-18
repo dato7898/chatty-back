@@ -1,7 +1,6 @@
 package com.dato.chatty.security.oauth2
 
 import com.dato.chatty.util.CookieUtils
-import com.dato.chatty.util.CookieUtils.deleteCookie
 import com.nimbusds.oauth2.sdk.util.StringUtils
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
@@ -46,8 +45,8 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     }
 
     fun removeAuthorizationRequestCookies(request: HttpServletRequest, response: HttpServletResponse) {
-        deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
+        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME)
     }
 
     companion object {

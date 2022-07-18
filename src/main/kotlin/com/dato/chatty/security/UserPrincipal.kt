@@ -11,7 +11,7 @@ class UserPrincipal(
     private val authorities: Collection<GrantedAuthority>
 ) :
     OAuth2User, UserDetails {
-    private var attributes: Map<String, Any>? = null
+    private var attributes: HashMap<String, Any>? = null
 
     override fun getPassword(): String? {
         return null
@@ -41,11 +41,11 @@ class UserPrincipal(
         return authorities
     }
 
-    override fun getAttributes(): Map<String, Any> {
-        return attributes!!
+    override fun getAttributes(): HashMap<String, Any>? {
+        return attributes
     }
 
-    fun setAttributes(attributes: Map<String, Any>?) {
+    fun setAttributes(attributes: HashMap<String, Any>?) {
         this.attributes = attributes
     }
 
