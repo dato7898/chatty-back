@@ -16,4 +16,9 @@ class MessageMutationResolver(
         return messageService.addMessageToUser(message, userId)
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    fun deleteMessage(messageId: String): Boolean {
+        return messageService.deleteMessage(messageId)
+    }
+
 }

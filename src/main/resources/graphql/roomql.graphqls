@@ -1,0 +1,9 @@
+type Room {
+    id: ID,
+    userIds: [String],
+    isMultiChat: Boolean
+}
+
+extend type Query {
+    roomByUserId(userId: String): Room
+}

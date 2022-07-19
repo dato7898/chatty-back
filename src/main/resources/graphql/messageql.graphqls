@@ -1,0 +1,19 @@
+type Message {
+    id: ID,
+    senderId: String,
+    roomId: String,
+    text: String
+}
+
+input MetaMessage {
+    text: String
+}
+
+extend type Query {
+    messagesByUserId(userId: String, pageNum: Int, pageSize: Int): [Message]
+}
+
+extend type Mutation {
+    addMessageToUser(message: MetaMessage, userId: String): Message
+    deleteMessage(messageId: String): Boolean
+}

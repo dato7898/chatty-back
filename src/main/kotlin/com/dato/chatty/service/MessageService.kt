@@ -44,7 +44,7 @@ class MessageService(
     }
 
     @Transactional
-    fun deleteMessage(messageId: String) {
+    fun deleteMessage(messageId: String): Boolean {
         val curUser = userService.getCurrentUser()
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
@@ -53,6 +53,7 @@ class MessageService(
             throw RuntimeException("Operation not allowed")
         }
         messageRepo.delete(message)
+        return true
     }
 
     fun sendWebsocketMessage(email: String, message: String, roomId: String?) {
