@@ -1,6 +1,7 @@
 package com.dato.chatty.security.websocket
 
 import com.dato.chatty.security.CustomOidcUserService
+import com.dato.chatty.security.UserPrincipal
 import com.dato.chatty.security.token.TokenProvider
 import com.dato.chatty.service.RoomService
 import org.springframework.messaging.Message
@@ -35,14 +36,31 @@ class AuthChannelInterceptorAdapter(
             }
         }
         if (StompCommand.SUBSCRIBE == accessor.command) {
-            val currentAuthentication  = accessor.getHeader("simpUser")
-            val destinationUrl = accessor.getHeader("simpDestination")
-            val i = 0
+            val currentAuthentication  = accessor.getHeader("simpUser") as UsernamePasswordAuthenticationToken
+            val curEmail = (currentAuthentication.principal as UserPrincipal).name
+            val destinationUrl = accessor.getHeader("simpDestination").toString()
+            val pattern = "^/user/(.*?)/msg/(.*)$".toRegex()
+            val match = pattern.find(destinationUrl)
+            if (match != null) {
+                val (email, roomId) = match.destructured
+                if (email != curEmail) {
+                    throw RuntimeException("Not allowed")
+                }
+                if (!roomService.checkUserInRoom(roomId, curEmail)) {
+                    throw RuntimeException("Not allowed")
+                }
+            }
         }
         if (StompCommand.SEND == accessor.command) {
-            val currentAuthentication  = accessor.getHeader("simpUser")
-            val destinationUrl = accessor.getHeader("simpDestination")
-            val i = 0
+            val currentAuthentication  = accessor.getHeader("simpUser") as UsernamePasswordAuthenticationToken
+            val curEmail = (currentAuthentication.principal as UserPrincipal).name
+            val destinationUrl = accessor.getHeader("simpDestination").toString()
+            if (destinationUrl.startsWith("/app/message/")) {
+                val roomId = destinationUrl.substring(13)
+                if (!roomService.checkUserInRoom(roomId, curEmail)) {
+                    throw RuntimeException("Not allowed")
+                }
+            }
         }
         return message
     }

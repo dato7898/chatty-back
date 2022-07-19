@@ -19,7 +19,7 @@ class WebSocketController(
 ) {
 
     @MessageMapping("/message/{roomId}")
-    fun greeting(@DestinationVariable roomId: Long, message: String, headers: StompHeaderAccessor) {
+    fun greeting(@DestinationVariable roomId: String, message: String, headers: StompHeaderAccessor) {
         val user = Optional.ofNullable(headers.user).map(Principal::getName)
         if (user.isPresent) {
             val subscribers = simpUserRegistry.users.stream()
