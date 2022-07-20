@@ -13,7 +13,7 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import javax.servlet.http.HttpServletResponse
 
-@RestController
+//@RestController
 @RequestMapping("file")
 class FileController(
     private val googleDriveService: GoogleDriveService

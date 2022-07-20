@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
 
-@Service
+//@Service
 class GoogleDriveService {
 
     @Value("\${app.google.drive.parent}")
