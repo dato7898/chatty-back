@@ -27,15 +27,15 @@ class GoogleDriveService {
         service = Drive.Builder(NetHttpTransport(),
             GsonFactory.getDefaultInstance(),
             requestInitializer)
-            .setApplicationName("Drive samples")
+            .setApplicationName("Drive Chatty")
             .build()
     }
 
-    fun uploadFile(fileName: String?, fileType: String?, fileContent: ByteArray): String {
+    fun uploadFile(fileName: String?, contentType: String?, fileContent: ByteArray): String {
         val fileMetadata = File()
         fileMetadata.name = fileName
         fileMetadata.parents = listOf(googleDriveParent)
-        val mediaContent = ByteArrayContent(fileType, fileContent)
+        val mediaContent = ByteArrayContent(contentType, fileContent)
         try {
             val file = service.files().create(fileMetadata, mediaContent)
                 .setFields("id")
@@ -54,7 +54,7 @@ class GoogleDriveService {
                 .executeMediaAndDownloadTo(outputStream)
             return outputStream
         } catch (e: GoogleJsonResponseException) {
-            System.err.println("Unable to move file: " +e.details)
+            System.err.println("Unable to move file: " + e.details)
             throw e
         }
     }

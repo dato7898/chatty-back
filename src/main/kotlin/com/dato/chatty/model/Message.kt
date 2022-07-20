@@ -13,5 +13,6 @@ class Message(
     @Id
     var id: String? = null
     var deleted: Boolean = false
+    var fileIds = ArrayList<String>()
 
 }
