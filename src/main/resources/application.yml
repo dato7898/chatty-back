@@ -21,3 +21,6 @@ app:
     allowedOrigins: ${ALLOWED_ORIGINS}
   oauth2:
     authorizedRedirectUris: ${AUTHORIZED_REDIRECT_URIS}
+  google:
+    drive:
+      parent: ${GOOGLE_DRIVE_PARENT}
