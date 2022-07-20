@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
-import java.io.File
 import javax.servlet.http.HttpServletResponse
 
-//@RestController
+@RestController
 @RequestMapping("file")
 class FileController(
     private val googleDriveService: GoogleDriveService
@@ -29,7 +28,6 @@ class FileController(
         @PathVariable realFileId: String,
         response: HttpServletResponse
     ) {
-        println(File("./").absolutePath)
         val baos = googleDriveService.downloadFile(realFileId)
         val content = baos.toByteArray()
         val bais = ByteArrayInputStream(content)
