@@ -6,13 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document
 class MessageFile(
     var googleFileId: String,
-    var contentType: String,
-    var fileName: String
+    var contentType: String?,
+    var fileName: String?,
+    var senderId: String?
 ) {
 
     @Id
     var id: String? = null
     var status: String = FileStatus.UPLOADED.name
-    var fileType: String = FileType.DOCUMENT.name
+    var fileType: String? = FileType.DOCUMENT.name
 
 }

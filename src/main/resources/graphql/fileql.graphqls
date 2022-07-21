@@ -1,0 +1,13 @@
+type MessageFile {
+    id: ID,
+    googleFileId: String,
+    contentType: String,
+    fileName: String,
+    senderId: String,
+    status: String,
+    fileType: String
+}
+
+extend type Query {
+    messageFiles(messageId: String): [MessageFile]
+}

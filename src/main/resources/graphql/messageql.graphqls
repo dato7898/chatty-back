@@ -2,11 +2,13 @@ type Message {
     id: ID,
     senderId: String,
     roomId: String,
-    text: String
+    text: String,
+    fileIds: [String]
 }
 
 input MetaMessage {
     text: String
+    fileIds: [String]
 }
 
 extend type Query {
