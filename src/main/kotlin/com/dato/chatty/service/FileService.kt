@@ -26,7 +26,7 @@ class FileService(
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
         }
-        if (curUser.id != message.senderId) {
+        if (curUser.id != message.user?.id) {
             throw RuntimeException("Not allowed")
         }
         return fileRepo.findAllByIdInAndStatus(message.fileIds, FileStatus.SAVED.name)
@@ -55,8 +55,8 @@ class FileService(
         if (curUser.id != messageFile.senderId) {
             throw RuntimeException("Not allowed")
         }
-        response.contentType = messageFile.contentType;
-        response.setHeader("Content-Disposition", "attachment;filename=" + messageFile.fileName);
+        response.contentType = messageFile.contentType
+        response.setHeader("Content-Disposition", "attachment;filename=" + messageFile.fileName)
         val baos = googleDriveService.downloadFile(messageFile.googleFileId)
         val content = baos.toByteArray()
         val bais = ByteArrayInputStream(content)

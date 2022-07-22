@@ -1,6 +1,6 @@
 type Message {
     id: ID,
-    senderId: String,
+    user: User,
     roomId: String,
     text: String,
     fileIds: [String]

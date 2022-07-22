@@ -38,7 +38,7 @@ class MessageService(
         fileService.checkFilesAndSave(message.fileIds)
         val room = roomService.getRoomWithUser(userId)
         message.roomId = room.id
-        message.senderId = curUser.id
+        message.user = curUser
         val newMessage = messageRepo.save(message)
         taskExecutor.execute { sendWebsocketMessage(curUser.email, message, room.id) }
         return newMessage
@@ -50,7 +50,7 @@ class MessageService(
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
         }
-        if (message.senderId != curUser.id) {
+        if (message.user?.id != curUser.id) {
             throw RuntimeException("Operation not allowed")
         }
         message.deleted = true
