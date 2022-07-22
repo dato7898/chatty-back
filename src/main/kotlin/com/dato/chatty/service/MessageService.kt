@@ -12,7 +12,6 @@ import org.springframework.messaging.simp.user.SimpUser
 import org.springframework.messaging.simp.user.SimpUserRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.util.HtmlUtils
 import java.util.stream.Collectors
 
 @Service
@@ -50,7 +49,7 @@ class MessageService(
         message.roomId = room.id
         message.senderId = curUser.id
         val newMessage = messageRepo.save(message)
-        taskExecutor.execute { sendWebsocketMessage(curUser.email, message.text, room.id) }
+        taskExecutor.execute { sendWebsocketMessage(curUser.email, message, room.id) }
         return newMessage
     }
 
@@ -68,15 +67,14 @@ class MessageService(
         return true
     }
 
-    fun sendWebsocketMessage(email: String, message: String, roomId: String?) {
+    fun sendWebsocketMessage(email: String, message: Message, roomId: String?) {
             val subscribers = simpUserRegistry.users.stream()
                 .map(SimpUser::getName)
                 .filter { email != it }
                 .collect(Collectors.toList())
 
             subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId",
-                    "Hello, " + HtmlUtils.htmlEscape(message) + "!")
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId", message)
             }
     }
 

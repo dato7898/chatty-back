@@ -13,7 +13,7 @@ class RoomService(
 ) {
 
     @Transactional
-    fun getRoomWithUser(userId: String): Room {
+    @Synchronized fun getRoomWithUser(userId: String): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
         return roomRepo.findRoomWithUser(curUser.id, user.id)
