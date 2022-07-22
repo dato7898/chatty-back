@@ -1,0 +1,22 @@
+type Post {
+    id: ID,
+    text: String,
+    userId: String,
+    createdAt: String,
+    editedAt: String,
+    fileIds: [String]
+}
+
+input MetaPost {
+    text: String,
+    userId: String,
+    fileIds: [String]
+}
+
+extend type Query {
+    fetchPosts(text: String, pageNum: Int, pageSize: Int): [Post]
+}
+
+extend type Mutation {
+    addPost(post: MetaPost): Post
+}

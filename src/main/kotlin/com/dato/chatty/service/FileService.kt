@@ -64,4 +64,16 @@ class FileService(
         response.flushBuffer()
     }
 
+    fun checkFilesAndSave(fileIds: Set<String>) {
+        val curUser = userService.getCurrentUser()
+        fileIds.forEach {
+            val file = fileRepo.findById(it).orElseThrow { ResourceNotFoundException("MessageFile", "id", it) }
+            if (curUser.id != file.senderId) {
+                throw RuntimeException("Not allowed")
+            }
+            file.status = FileStatus.SAVED.name
+            fileRepo.save(file)
+        }
+    }
+
 }

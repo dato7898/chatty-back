@@ -2,16 +2,19 @@ package com.dato.chatty.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.util.*
-import kotlin.collections.HashSet
+import java.util.Date
 
 @Document
-class Room {
+data class Post(
+    val text: String,
+    var userId: String?
+) {
+
     @Id
     var id: String? = null
-    var userIds: HashSet<String?> = HashSet()
-    var isMultiChat: Boolean = false
-    var deleted: Boolean = false
+    var deleted = false
     var createdAt = Date()
     var editedAt = Date()
+    var fileIds = HashSet<String>()
+
 }

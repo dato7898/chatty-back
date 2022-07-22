@@ -23,7 +23,7 @@ class MessageService(
     private val simpUserRegistry: SimpUserRegistry,
     private val simpMessagingTemplate: SimpMessagingTemplate,
     private val taskExecutor: SimpleAsyncTaskExecutor,
-    private val fileRepo: FileRepo
+    private val fileService: FileService
 ) {
 
     @Transactional
@@ -38,14 +38,7 @@ class MessageService(
             throw RuntimeException("Message text cannot be empty")
         }
         val curUser = userService.getCurrentUser()
-        message.fileIds.forEach {
-            val file = fileRepo.findById(it).orElseThrow { ResourceNotFoundException("MessageFile", "id", it) }
-            if (curUser.id != file.senderId) {
-                throw RuntimeException("Not allowed")
-            }
-            file.status = FileStatus.SAVED.name
-            fileRepo.save(file)
-        }
+        fileService.checkFilesAndSave(message.fileIds)
         val room = roomService.getRoomWithUser(userId)
         message.roomId = room.id
         message.senderId = curUser.id

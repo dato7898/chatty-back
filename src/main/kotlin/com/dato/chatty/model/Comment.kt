@@ -6,12 +6,17 @@ import java.util.*
 import kotlin.collections.HashSet
 
 @Document
-class Room {
+data class Comment(
+    private val text: String,
+    private val userId: String?,
+    private val postId: String?
+) {
+
     @Id
     var id: String? = null
-    var userIds: HashSet<String?> = HashSet()
-    var isMultiChat: Boolean = false
-    var deleted: Boolean = false
+    var deleted = false
     var createdAt = Date()
     var editedAt = Date()
+    var fileIds = HashSet<String>()
+
 }
