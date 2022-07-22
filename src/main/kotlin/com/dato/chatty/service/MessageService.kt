@@ -29,7 +29,7 @@ class MessageService(
     @Transactional
     fun getMessagesWithUser(userId: String, page: Pageable): List<Message> {
         val room = roomService.getRoomWithUser(userId)
-        return messageRepo.findAllByRoomId(room.id, page)
+        return messageRepo.findAllByRoomIdAndDeletedIsFalse(room.id, page)
     }
 
     @Transactional
@@ -63,7 +63,8 @@ class MessageService(
         if (message.senderId != curUser.id) {
             throw RuntimeException("Operation not allowed")
         }
-        messageRepo.delete(message)
+        message.deleted = true
+        messageRepo.save(message)
         return true
     }
 
