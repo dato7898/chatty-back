@@ -1,4 +1,9 @@
 spring:
+  elasticsearch:
+    rest:
+      uris: ${ELASTICSEARCH_BONSAI_URI}
+      username: ${ELASTICSEARCH_BONSAI_USERNAME}
+      password: ${ELASTICSEARCH_BONSAI_PASSWORD}
   data:
     mongodb:
       uri: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_URL}/?retryWrites=true&w=majority

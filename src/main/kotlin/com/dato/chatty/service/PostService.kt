@@ -19,7 +19,7 @@ class PostService(
     @Transactional
     fun fetchPosts(text: String, pageable: Pageable): List<Post> {
         val ids: HashSet<String?> = elasticPostRepo.findByText(text, pageable).map { it.id }.toHashSet()
-        return postRepo.findAllById(ids)
+        return postRepo.findAllByIdIn(ids)
     }
 
     @Transactional

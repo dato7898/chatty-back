@@ -1,9 +1,7 @@
 package com.dato.chatty.service
 
 import com.dato.chatty.exception.ResourceNotFoundException
-import com.dato.chatty.model.FileStatus
 import com.dato.chatty.model.Message
-import com.dato.chatty.repo.FileRepo
 import com.dato.chatty.repo.MessageRepo
 import org.springframework.core.task.SimpleAsyncTaskExecutor
 import org.springframework.data.domain.Pageable
