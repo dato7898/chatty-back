@@ -40,7 +40,7 @@ class MessageService(
         message.roomId = room.id
         message.user = curUser
         val newMessage = messageRepo.save(message)
-        taskExecutor.execute { sendWebsocketMessage(curUser.email, message, room.id) }
+        taskExecutor.execute { sendWebsocketMessage(curUser.email, newMessage, room.id) }
         return newMessage
     }
 
