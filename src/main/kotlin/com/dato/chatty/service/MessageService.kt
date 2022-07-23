@@ -63,7 +63,7 @@ class MessageService(
                 .map(SimpUser::getName)
                 .filter { email != it }
                 .collect(Collectors.toList())
-
+            message.user?.friends = ArrayList()
             subscribers.forEach {
                 simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId", message)
             }

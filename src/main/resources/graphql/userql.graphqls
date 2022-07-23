@@ -5,7 +5,7 @@ type User {
     lastname: String,
     googleImgUrl: String,
     roles: [String],
-    friendIds: [String]
+    friends: [User]
 }
 
 type Query {

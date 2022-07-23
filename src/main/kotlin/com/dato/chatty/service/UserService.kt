@@ -40,19 +40,20 @@ class UserService(
     @Transactional
     fun findFriends(email: String, page: Pageable): List<User> {
         val user = userRepo.findByEmail(email).orElseThrow{ ResourceNotFoundException("User", "email", email) }
-        return userRepo.findAllByIdInAndFriendIds(user.friendIds, user.id, page)
+        return user.friends.stream().filter { it.friends.contains(user) }.toList()
     }
 
     @Transactional
     fun findFriendsById(userId: String, page: Pageable): List<User> {
         val user = userRepo.findById(userId).orElseThrow{ ResourceNotFoundException("User", "id", userId) }
-        return userRepo.findAllByIdInAndFriendIds(user.friendIds, user.id, page)
+        return user.friends.stream().filter { it.friends.contains(user) }.toList()
     }
 
     @Transactional
     fun getFriendRequests(page: Pageable): List<User> {
         val user = getCurrentUser()
-        return userRepo.findAllByFriendIdsAndIdNotIn(user.id, user.friendIds, page)
+        return userRepo.findAllByFriendsContaining(user, page)
+            .stream().filter { !user.friends.contains(it) }.toList()
     }
 
     fun findUsers(search: String, page: Pageable): List<User> {
@@ -65,16 +66,16 @@ class UserService(
     @Transactional
     fun addFriend(userId: String): User {
         val currentUser = getCurrentUser()
-        userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        currentUser.friendIds.add(userId)
+        val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        currentUser.friends.add(user)
         return userRepo.save(currentUser)
     }
 
     @Transactional
     fun deleteFriend(userId: String): User {
         val currentUser = getCurrentUser()
-        userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        currentUser.friendIds.remove(userId)
+        val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        currentUser.friends.remove(user)
         return userRepo.save(currentUser)
     }
 
