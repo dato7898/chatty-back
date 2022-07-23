@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Optional
 import java.util.regex.Pattern
+import java.util.stream.Collectors
 
 @Service
 class UserService(
@@ -40,20 +41,20 @@ class UserService(
     @Transactional
     fun findFriends(email: String, page: Pageable): List<User> {
         val user = userRepo.findByEmail(email).orElseThrow{ ResourceNotFoundException("User", "email", email) }
-        return user.friends.stream().filter { it.friends.contains(user) }.toList()
+        return user.friends.stream().filter { it.friends.contains(user) }.collect(Collectors.toList())
     }
 
     @Transactional
     fun findFriendsById(userId: String, page: Pageable): List<User> {
         val user = userRepo.findById(userId).orElseThrow{ ResourceNotFoundException("User", "id", userId) }
-        return user.friends.stream().filter { it.friends.contains(user) }.toList()
+        return user.friends.stream().filter { it.friends.contains(user) }.collect(Collectors.toList())
     }
 
     @Transactional
     fun getFriendRequests(page: Pageable): List<User> {
         val user = getCurrentUser()
         return userRepo.findAllByFriendsContaining(user, page)
-            .stream().filter { !user.friends.contains(it) }.toList()
+            .stream().filter { !user.friends.contains(it) }.collect(Collectors.toList())
     }
 
     fun findUsers(search: String, page: Pageable): List<User> {
