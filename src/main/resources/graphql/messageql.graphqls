@@ -3,7 +3,9 @@ type Message {
     user: User,
     roomId: String,
     text: String,
-    fileIds: [String]
+    fileIds: [String],
+    createdAt: String,
+    editedAt: String
 }
 
 input MetaMessage {

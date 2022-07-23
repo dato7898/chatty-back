@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface MessageRepo : MongoRepository<Message, String> {
 
-    fun findAllByRoomIdAndDeletedIsFalse(id: String?, page: Pageable): List<Message>
+    fun findAllByRoomIdAndDeletedIsFalseOrderByCreatedAtDesc(id: String?, page: Pageable): List<Message>
 
 }
