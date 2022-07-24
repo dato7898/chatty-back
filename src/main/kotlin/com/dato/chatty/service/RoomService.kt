@@ -16,10 +16,10 @@ class RoomService(
     @Synchronized fun getRoomWithUser(userId: String): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        return roomRepo.findRoomWithUser(curUser.id, user.id)
+        return roomRepo.findByUsersContainsAndIsMultiChatIsFalse(listOf(curUser, user))
             .orElseGet {
                 val room = Room()
-                room.userIds = hashSetOf(curUser.id, user.id)
+                room.users = arrayListOf(curUser, user)
                 roomRepo.save(room)
             }
     }
@@ -27,7 +27,7 @@ class RoomService(
     @Transactional
     fun checkUserInRoom(roomId: String, email: String): Boolean {
         val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
-        val room = roomRepo.findByIdAndUserIds(roomId, user.id)
+        val room = roomRepo.findByIdAndUsers(roomId, user)
         return room.isPresent
     }
 

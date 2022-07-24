@@ -1,6 +1,6 @@
 type Room {
     id: ID,
-    userIds: [String],
+    users: [User],
     isMultiChat: Boolean
 }
 
