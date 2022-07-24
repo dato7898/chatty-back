@@ -1,6 +1,7 @@
 package com.dato.chatty.model
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
@@ -8,6 +9,7 @@ import java.util.*
 class Room {
     @Id
     var id: String? = null
+    @DBRef
     var users = ArrayList<User>()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
