@@ -25,6 +25,12 @@ class RoomService(
     }
 
     @Transactional
+    fun getMyRooms(): List<Room> {
+        val curUser = userService.getCurrentUser()
+        return roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser)
+    }
+
+    @Transactional
     fun checkUserInRoom(roomId: String, email: String): Boolean {
         val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
         val room = roomRepo.findByIdAndUsers(roomId, user)

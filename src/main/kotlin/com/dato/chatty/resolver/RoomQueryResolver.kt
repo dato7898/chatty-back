@@ -16,4 +16,9 @@ class RoomQueryResolver(
         return roomService.getRoomWithUser(userId)
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    fun getMyRooms(): List<Room> {
+        return roomService.getMyRooms()
+    }
+
 }

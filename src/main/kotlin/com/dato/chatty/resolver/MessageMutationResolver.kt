@@ -17,6 +17,11 @@ class MessageMutationResolver(
     }
 
     @PreAuthorize("hasAuthority('USER')")
+    fun addMessageToRoom(message: Message, roomId: String): Message {
+        return messageService.addMessageToRoom(message, roomId)
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
     fun deleteMessage(messageId: String): Boolean {
         return messageService.deleteMessage(messageId)
     }

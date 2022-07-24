@@ -15,4 +15,5 @@ class Room {
     var deleted: Boolean = false
     var createdAt = Date()
     var editedAt = Date()
+    var lastMessageAt = Date()
 }

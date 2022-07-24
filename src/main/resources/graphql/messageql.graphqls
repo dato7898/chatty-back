@@ -1,7 +1,7 @@
 type Message {
     id: ID,
     user: User,
-    roomId: String,
+    room: Room,
     text: String,
     fileIds: [String],
     createdAt: String,
@@ -15,9 +15,11 @@ input MetaMessage {
 
 extend type Query {
     messagesByUserId(userId: String, pageNum: Int, pageSize: Int): [Message]
+    messagesByRoomId(roomId: String, pageNum: Int, pageSize: Int): [Message]
 }
 
 extend type Mutation {
     addMessageToUser(message: MetaMessage, userId: String): Message
+    addMessageToRoom(message: MetaMessage, roomId: String): Message
     deleteMessage(messageId: String): Boolean
 }

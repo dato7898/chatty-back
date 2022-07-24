@@ -3,30 +3,32 @@ package com.dato.chatty.service
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
-import org.springframework.core.task.SimpleAsyncTaskExecutor
+import com.dato.chatty.repo.RoomRepo
 import org.springframework.data.domain.Pageable
-import org.springframework.messaging.simp.SimpMessagingTemplate
-import org.springframework.messaging.simp.user.SimpUser
-import org.springframework.messaging.simp.user.SimpUserRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.stream.Collectors
+import java.util.*
 
 @Service
 class MessageService(
     private val messageRepo: MessageRepo,
     private val roomService: RoomService,
     private val userService: UserService,
-    private val simpUserRegistry: SimpUserRegistry,
-    private val simpMessagingTemplate: SimpMessagingTemplate,
-    private val taskExecutor: SimpleAsyncTaskExecutor,
-    private val fileService: FileService
+    private val fileService: FileService,
+    private val roomRepo: RoomRepo
 ) {
 
     @Transactional
     fun getMessagesWithUser(userId: String, page: Pageable): List<Message> {
         val room = roomService.getRoomWithUser(userId)
-        val messages = messageRepo.findAllByRoomIdAndDeletedIsFalseOrderByCreatedAtDesc(room.id, page)
+        val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
+        return messages.reversed()
+    }
+
+    @Transactional
+    fun getMessagesByRoomId(roomId: String, page: Pageable): List<Message> {
+        val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
+        val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
         return messages.reversed()
     }
 
@@ -38,11 +40,24 @@ class MessageService(
         val curUser = userService.getCurrentUser()
         fileService.checkFilesAndSave(message.fileIds)
         val room = roomService.getRoomWithUser(userId)
-        message.roomId = room.id
+        room.lastMessageAt = Date()
+        message.room = room
         message.user = curUser
-        val newMessage = messageRepo.save(message)
-        //taskExecutor.execute { sendWebsocketMessage(curUser.email, newMessage) }
-        return newMessage
+        return messageRepo.save(message)
+    }
+
+    @Transactional
+    fun addMessageToRoom(message: Message, roomId: String): Message {
+        if (message.text.isBlank()) {
+            throw RuntimeException("Message text cannot be empty")
+        }
+        val curUser = userService.getCurrentUser()
+        fileService.checkFilesAndSave(message.fileIds)
+        val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
+        room.lastMessageAt = Date()
+        message.room = room
+        message.user = curUser
+        return messageRepo.save(message)
     }
 
     @Transactional
@@ -51,23 +66,12 @@ class MessageService(
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
         }
-        if (message.user?.id != curUser.id) {
+        if (message.user.id != curUser.id) {
             throw RuntimeException("Operation not allowed")
         }
         message.deleted = true
         messageRepo.save(message)
         return true
-    }
-
-    fun sendWebsocketMessage(email: String, message: Message) {
-            val subscribers = simpUserRegistry.users.stream()
-                .map(SimpUser::getName)
-                .filter { email != it }
-                .collect(Collectors.toList())
-            message.user?.friends = ArrayList()
-            subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg/" + message.roomId, message)
-            }
     }
 
 }

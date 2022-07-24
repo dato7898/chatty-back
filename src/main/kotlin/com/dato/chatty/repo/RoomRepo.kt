@@ -11,4 +11,6 @@ interface RoomRepo : MongoRepository<Room, String> {
 
     fun findByIdAndUsers(roomId: String, user: User): Optional<Room>
 
+    fun findAllByUsersContainsOrderByLastMessageAtDesc(user: User): List<Room>
+
 }

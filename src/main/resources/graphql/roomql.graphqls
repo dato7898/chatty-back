@@ -6,4 +6,5 @@ type Room {
 
 extend type Query {
     roomByUserId(userId: String): Room
+    myRooms: [Room]
 }

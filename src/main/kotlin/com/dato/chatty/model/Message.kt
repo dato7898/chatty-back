@@ -8,9 +8,10 @@ import kotlin.collections.HashSet
 
 @Document
 class Message(
-    @DBRef(lazy = false)
-    var user: User?,
-    var roomId: String?,
+    @DBRef
+    var user: User,
+    @DBRef
+    var room: Room,
     var text: String
 ) {
 
