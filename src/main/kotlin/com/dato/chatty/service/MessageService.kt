@@ -41,7 +41,7 @@ class MessageService(
         message.roomId = room.id
         message.user = curUser
         val newMessage = messageRepo.save(message)
-        taskExecutor.execute { sendWebsocketMessage(curUser.email, newMessage, room.id) }
+        taskExecutor.execute { sendWebsocketMessage(curUser.email, newMessage) }
         return newMessage
     }
 
@@ -59,14 +59,14 @@ class MessageService(
         return true
     }
 
-    fun sendWebsocketMessage(email: String, message: Message, roomId: String?) {
+    fun sendWebsocketMessage(email: String, message: Message) {
             val subscribers = simpUserRegistry.users.stream()
                 .map(SimpUser::getName)
                 .filter { email != it }
                 .collect(Collectors.toList())
             message.user?.friends = ArrayList()
             subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId", message)
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg/" + message.roomId, message)
             }
     }
 

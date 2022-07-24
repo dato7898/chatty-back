@@ -1,5 +1,6 @@
 package com.dato.chatty.controller
 
+import com.dato.chatty.model.Message
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -19,7 +20,7 @@ class WebSocketController(
 ) {
 
     @MessageMapping("/message/{roomId}")
-    fun greeting(@DestinationVariable roomId: String, message: String, headers: StompHeaderAccessor) {
+    fun greeting(@DestinationVariable roomId: String, message: Message, headers: StompHeaderAccessor) {
         val user = Optional.ofNullable(headers.user).map(Principal::getName)
         if (user.isPresent) {
             val subscribers = simpUserRegistry.users.stream()
@@ -28,8 +29,7 @@ class WebSocketController(
                 .collect(Collectors.toList())
 
             subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId",
-                    "Hello, " + HtmlUtils.htmlEscape(message) + "!")
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId", message)
             }
         }
     }
