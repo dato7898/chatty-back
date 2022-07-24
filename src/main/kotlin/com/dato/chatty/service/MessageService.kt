@@ -26,7 +26,8 @@ class MessageService(
     @Transactional
     fun getMessagesWithUser(userId: String, page: Pageable): List<Message> {
         val room = roomService.getRoomWithUser(userId)
-        return messageRepo.findAllByRoomIdAndDeletedIsFalseOrderByCreatedAtDesc(room.id, page)
+        val messages = messageRepo.findAllByRoomIdAndDeletedIsFalseOrderByCreatedAtDesc(room.id, page)
+        return messages.reversed()
     }
 
     @Transactional
