@@ -18,4 +18,6 @@ class Room {
     var createdAt = Date()
     var editedAt = Date()
     var lastMessageAt = Date()
+    @DBRef
+    var lastMessage: Message? = null
 }

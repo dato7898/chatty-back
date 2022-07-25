@@ -54,10 +54,13 @@ class MessageService(
         val curUser = userService.getCurrentUser()
         fileService.checkFilesAndSave(message.fileIds)
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
-        room.lastMessageAt = Date()
         message.room = room
         message.user = curUser
-        return messageRepo.save(message)
+        val newMessage = messageRepo.save(message)
+        room.lastMessage = newMessage
+        room.lastMessageAt = Date()
+        roomRepo.save(room)
+        return newMessage
     }
 
     @Transactional

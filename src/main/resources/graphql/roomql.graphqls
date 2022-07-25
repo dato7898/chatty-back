@@ -2,6 +2,7 @@ type Room {
     id: ID,
     users: [User],
     isMultiChat: Boolean
+    lastMessage: Message
 }
 
 extend type Query {
