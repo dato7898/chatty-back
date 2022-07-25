@@ -22,4 +22,9 @@ class RoomQueryResolver(
         return roomService.getMyRooms(PageRequest.of(pageNum, pageSize))
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    fun getRoomById(roomId: String): Room {
+        return roomService.getRoomById(roomId)
+    }
+
 }

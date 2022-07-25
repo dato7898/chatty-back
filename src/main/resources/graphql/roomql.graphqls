@@ -9,4 +9,5 @@ type Room {
 extend type Query {
     roomByUserId(userId: String): Room
     myRooms(pageNum: Int, pageSize: Int): [Room]
+    roomById(roomId: String): Room
 }

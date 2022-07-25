@@ -39,6 +39,16 @@ class RoomService(
     }
 
     @Transactional
+    fun getRoomById(roomId: String): Room {
+        val curUser = userService.getCurrentUser()
+        val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
+        if (!room.users.contains(curUser)) {
+            throw RuntimeException("Not allowed")
+        }
+        return room
+    }
+
+    @Transactional
     fun checkUserInRoom(roomId: String, email: String): Boolean {
         val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
         val room = roomRepo.findByIdAndUsers(roomId, user)
