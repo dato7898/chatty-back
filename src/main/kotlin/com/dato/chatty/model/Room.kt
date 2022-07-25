@@ -20,4 +20,6 @@ class Room {
     var lastMessageAt = Date()
     @DBRef
     var lastMessage: Message? = null
+    var unread = 0L
+
 }

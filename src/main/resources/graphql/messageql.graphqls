@@ -5,7 +5,8 @@ type Message {
     text: String,
     fileIds: [String],
     createdAt: String,
-    editedAt: String
+    editedAt: String,
+    reads: [User]
 }
 
 input MetaMessage {

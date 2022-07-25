@@ -21,5 +21,7 @@ class Message(
     var fileIds = HashSet<String>()
     var createdAt = Date()
     var editedAt = Date()
+    @DBRef
+    var reads = ArrayList<User>()
 
 }
