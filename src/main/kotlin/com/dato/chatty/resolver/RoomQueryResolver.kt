@@ -3,6 +3,7 @@ package com.dato.chatty.resolver
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.dato.chatty.model.Room
 import com.dato.chatty.service.RoomService
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 
@@ -17,8 +18,8 @@ class RoomQueryResolver(
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getMyRooms(): List<Room> {
-        return roomService.getMyRooms()
+    fun getMyRooms(pageNum: Int, pageSize: Int): List<Room> {
+        return roomService.getMyRooms(PageRequest.of(pageNum, pageSize))
     }
 
 }

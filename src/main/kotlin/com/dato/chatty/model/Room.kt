@@ -9,6 +9,8 @@ import java.util.*
 class Room {
     @Id
     var id: String? = null
+    var name = ""
+    var imageUrl = ""
     @DBRef
     var users = ArrayList<User>()
     var isMultiChat: Boolean = false

@@ -32,7 +32,7 @@ class WebSocketController(
                 .collect(Collectors.toList())
 
             subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg/$roomId", message)
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg", message)
             }
         }
     }

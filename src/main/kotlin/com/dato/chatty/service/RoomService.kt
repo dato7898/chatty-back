@@ -3,6 +3,7 @@ package com.dato.chatty.service
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Room
 import com.dato.chatty.repo.RoomRepo
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,9 +26,9 @@ class RoomService(
     }
 
     @Transactional
-    fun getMyRooms(): List<Room> {
+    fun getMyRooms(page: Pageable): List<Room> {
         val curUser = userService.getCurrentUser()
-        return roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser)
+        return roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser, page)
     }
 
     @Transactional

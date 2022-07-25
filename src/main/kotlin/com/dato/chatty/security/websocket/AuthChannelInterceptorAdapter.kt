@@ -39,14 +39,11 @@ class AuthChannelInterceptorAdapter(
             val currentAuthentication  = accessor.getHeader("simpUser") as UsernamePasswordAuthenticationToken
             val curEmail = (currentAuthentication.principal as UserPrincipal).name
             val destinationUrl = accessor.getHeader("simpDestination").toString()
-            val pattern = "^/user/(.*?)/msg/(.*)$".toRegex()
+            val pattern = "^/user/(.*?)/msg$".toRegex()
             val match = pattern.find(destinationUrl)
             if (match != null) {
-                val (email, roomId) = match.destructured
+                val (email) = match.destructured
                 if (email != curEmail) {
-                    throw RuntimeException("Not allowed")
-                }
-                if (!roomService.checkUserInRoom(roomId, curEmail)) {
                     throw RuntimeException("Not allowed")
                 }
             }

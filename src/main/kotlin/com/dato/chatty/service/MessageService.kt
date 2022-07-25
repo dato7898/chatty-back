@@ -66,7 +66,7 @@ class MessageService(
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
         }
-        if (message.user.id != curUser.id) {
+        if (message.user?.id != curUser.id) {
             throw RuntimeException("Operation not allowed")
         }
         message.deleted = true
