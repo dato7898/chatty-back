@@ -45,6 +45,7 @@ class RoomService(
         if (!room.users.contains(curUser)) {
             throw RuntimeException("Not allowed")
         }
+        room.unread = messageRepo.countAllUnread(ObjectId(room.id), listOf(ObjectId(curUser.id)))
         return room
     }
 
