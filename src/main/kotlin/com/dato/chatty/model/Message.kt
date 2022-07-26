@@ -1,27 +1,25 @@
 package com.dato.chatty.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
-import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
+import javax.persistence.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
-@Document
+@Entity
 class Message(
-    @DBRef
-    var user: User?,
-    @DBRef
-    var room: Room?,
+    @ManyToOne
+    var user: User,
+    @ManyToOne
+    var room: Room,
     var text: String
 ) {
-
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: String? = null
     var deleted: Boolean = false
-    var fileIds = HashSet<String>()
+    @OneToMany
+    var files = HashSet<MessageFile>()
     var createdAt = Date()
     var editedAt = Date()
-    @DBRef
+    @OneToMany
     var reads = ArrayList<User>()
-
 }

@@ -1,22 +1,26 @@
 package com.dato.chatty.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
-import org.springframework.data.mongodb.core.mapping.Document
+import java.util.Collections
+import javax.persistence.*
 
-@Document
+@Entity
+@Table(name = "users")
 data class User(
     var email: String,
     var firstname: String,
     var lastname: String,
     var googleImgUrl: String?,
-    var roles: Set<Role>
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles")
+    var roles: Set<Role> = Collections.singleton(Role.USER),
+    var deleted: Boolean = false,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
 ) {
-
-    @Id
-    var id: String? = null
-    @DBRef
+    @OneToMany
+    @JoinTable(name="friends")
+    @JoinColumn(name="user_A_id", referencedColumnName="id")
+    @JoinColumn(name="user_B_id", referencedColumnName="id")
     var friends: ArrayList<User> = ArrayList()
-    var deleted: Boolean = false
-
 }

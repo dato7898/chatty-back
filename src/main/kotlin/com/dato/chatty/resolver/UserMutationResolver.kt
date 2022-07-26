@@ -12,12 +12,12 @@ class UserMutationResolver(
 ) : GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('USER')")
-    fun addFriend(userId: String): User {
+    fun addFriend(userId: Long): User {
         return userService.addFriend(userId)
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun deleteFriend(userId: String): User {
+    fun deleteFriend(userId: Long): User {
         return userService.deleteFriend(userId)
     }
 

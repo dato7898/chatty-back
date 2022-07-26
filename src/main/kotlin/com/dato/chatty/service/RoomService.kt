@@ -17,7 +17,7 @@ class RoomService(
 ) {
 
     @Transactional
-    @Synchronized fun getRoomWithUser(userId: String): Room {
+    @Synchronized fun getRoomWithUser(userId: Long): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
         return roomRepo.findByUsersContainsAndIsMultiChatIsFalse(listOf(curUser, user))
@@ -33,7 +33,7 @@ class RoomService(
         val curUser = userService.getCurrentUser()
         val rooms = roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser, page)
         rooms.forEach {
-            it.unread = messageRepo.countAllUnread(ObjectId(it.id), listOf(ObjectId(curUser.id)))
+            it.unread = messageRepo.countAllUnread(it.id, listOf(curUser.id))
         }
         return rooms
     }
@@ -45,7 +45,7 @@ class RoomService(
         if (!room.users.contains(curUser)) {
             throw RuntimeException("Not allowed")
         }
-        room.unread = messageRepo.countAllUnread(ObjectId(room.id), listOf(ObjectId(curUser.id)))
+        room.unread = messageRepo.countAllUnread(room.id, listOf(curUser.id))
         return room
     }
 

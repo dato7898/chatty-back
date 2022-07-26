@@ -1,25 +1,28 @@
 package com.dato.chatty.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
-import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToMany
+import javax.persistence.OneToOne
+import kotlin.collections.ArrayList
 
-@Document
+@Entity
 class Room {
-    @Id
-    var id: String? = null
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
     var name = ""
     var imageUrl = ""
-    @DBRef
+    @OneToMany
     var users = ArrayList<User>()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
     var createdAt = Date()
     var editedAt = Date()
     var lastMessageAt = Date()
-    @DBRef
+    @OneToOne
     var lastMessage: Message? = null
     var unread = 0L
-
 }

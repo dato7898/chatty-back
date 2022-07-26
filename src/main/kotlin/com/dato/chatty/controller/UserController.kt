@@ -33,7 +33,7 @@ class UserController(
 
     @GetMapping("{userId}/friends")
     @PreAuthorize("hasAuthority('USER')")
-    fun getUserFriends(@PathVariable userId: String): List<User> {
+    fun getUserFriends(@PathVariable userId: Long): List<User> {
         return userService.findFriendsById(userId, Pageable.unpaged())
     }
 

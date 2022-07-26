@@ -7,7 +7,7 @@ import java.util.Date
 @Document
 data class Post(
     val text: String,
-    var userId: String?
+    var userId: Long?
 ) {
 
     @Id

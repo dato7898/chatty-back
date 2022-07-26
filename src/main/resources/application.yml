@@ -1,4 +1,14 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://ec2-3-222-74-92.compute-1.amazonaws.com:5432/darevrb4nvlt5i
+    username: hxzlwnyyapyglk
+    password: d57077edeb453adb784a70568a9b541ab0b43ae7809a6de7c67fdfc6bc8bb599
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: update
   elasticsearch:
     rest:
       uris: ${ELASTICSEARCH_BONSAI_URI}

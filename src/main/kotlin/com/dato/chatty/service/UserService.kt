@@ -30,7 +30,7 @@ class UserService(
         return userRepo.findByEmail(email)
     }
 
-    fun findById(id: String): Optional<User> {
+    fun findById(id: Long): Optional<User> {
         return userRepo.findById(id)
     }
 
@@ -45,7 +45,7 @@ class UserService(
     }
 
     @Transactional
-    fun findFriendsById(userId: String, page: Pageable): List<User> {
+    fun findFriendsById(userId: Long, page: Pageable): List<User> {
         val user = userRepo.findById(userId).orElseThrow{ ResourceNotFoundException("User", "id", userId) }
         return user.friends.stream().filter { it.friends.contains(user) }.collect(Collectors.toList())
     }
@@ -58,14 +58,12 @@ class UserService(
     }
 
     fun findUsers(search: String, page: Pageable): List<User> {
-        val searches = search.split(Pattern.compile("\\s+")).map {
-            Pattern.compile(".*$it.*")
-        }.toSet()
+        val searches = search.split(Pattern.compile("\\s+")).map {"%$it%" }.toSet()
         return userRepo.findUsers(searches, page)
     }
 
     @Transactional
-    fun addFriend(userId: String): User {
+    fun addFriend(userId: Long): User {
         val currentUser = getCurrentUser()
         val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
         if (user == currentUser) {
@@ -76,7 +74,7 @@ class UserService(
     }
 
     @Transactional
-    fun deleteFriend(userId: String): User {
+    fun deleteFriend(userId: Long): User {
         val currentUser = getCurrentUser()
         val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
         currentUser.friends.remove(user)

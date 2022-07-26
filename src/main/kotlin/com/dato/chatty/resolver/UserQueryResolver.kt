@@ -23,7 +23,7 @@ class UserQueryResolver(
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getFriendsById(id: String, pageNum: Int, pageSize: Int): List<User> {
+    fun getFriendsById(id: Long, pageNum: Int, pageSize: Int): List<User> {
         return userService.findFriendsById(id, PageRequest.of(pageNum, pageSize))
     }
 

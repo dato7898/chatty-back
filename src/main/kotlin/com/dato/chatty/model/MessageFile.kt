@@ -1,18 +1,20 @@
 package com.dato.chatty.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 
-@Document
+@Entity
 class MessageFile(
     var googleFileId: String,
     var contentType: String?,
     var fileName: String?,
-    var senderId: String?
+    var senderId: Long?
 ) {
 
-    @Id
-    var id: String? = null
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
     var status: String = FileStatus.UPLOADED.name
     var fileType: String? = FileType.DOCUMENT.name
 
