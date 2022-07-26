@@ -26,4 +26,10 @@ class MessageMutationResolver(
         return messageService.deleteMessage(messageId)
     }
 
+    @PreAuthorize("hasAuthority('USER')")
+    fun setRead(roomId: String): Boolean {
+        messageService.setRead(roomId)
+        return true
+    }
+
 }

@@ -23,4 +23,5 @@ extend type Mutation {
     addMessageToUser(message: MetaMessage, userId: String): Message
     addMessageToRoom(message: MetaMessage, roomId: String): Message
     deleteMessage(messageId: String): Boolean
+    setRead(roomId: String): Boolean
 }

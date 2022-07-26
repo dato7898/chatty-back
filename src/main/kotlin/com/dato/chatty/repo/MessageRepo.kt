@@ -14,4 +14,7 @@ interface MessageRepo : MongoRepository<Message, String> {
     @Query(value = "{\$and: [{'room.\$id': ?0}, {'reads.\$id': {\$nin: ?1}}, {deleted: false}]}", count = true)
     fun countAllUnread(roomId: ObjectId, userIds: List<ObjectId>): Long
 
+    @Query("{\$and: [{'room.\$id': ?0}, {'reads.\$id': {\$nin: ?1}}, {deleted: false}]}")
+    fun getAllUnread(roomId: ObjectId, userIds: List<ObjectId>): List<Message>
+
 }

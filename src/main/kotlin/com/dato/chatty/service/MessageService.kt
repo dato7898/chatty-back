@@ -4,13 +4,11 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
 import com.dato.chatty.repo.RoomRepo
+import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
-import org.springframework.messaging.simp.user.SimpUser
-import org.springframework.messaging.simp.user.SimpUserRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
-import java.util.stream.Collectors
 
 @Service
 class MessageService(
@@ -18,9 +16,20 @@ class MessageService(
     private val roomService: RoomService,
     private val userService: UserService,
     private val fileService: FileService,
-    private val roomRepo: RoomRepo,
-    private val simpUserRegistry: SimpUserRegistry
+    private val roomRepo: RoomRepo
 ) {
+
+    // Тут возможна ошибка, что setRead отработает раньше чем сообщение добавится в базу
+    // Фикс заключается в отправке сообщений в сокеты через бэк, когда сообщение уже сохранилось в базу, а не на клиенте
+    @Transactional
+    fun setRead(roomId: String) {
+        val curUser = userService.getCurrentUser()
+        val messages = messageRepo.getAllUnread(ObjectId(roomId), listOf(ObjectId(curUser.id)))
+        messages.forEach {
+            it.reads.add(curUser)
+        }
+        messageRepo.saveAll(messages)
+    }
 
     @Transactional
     fun getMessagesWithUser(userId: String, page: Pageable): List<Message> {
@@ -71,13 +80,6 @@ class MessageService(
         message.room = room
         message.user = curUser
         message.reads = arrayListOf(curUser)
-        val subscribers = simpUserRegistry.users.stream()
-            .map(SimpUser::getName)
-            .collect(Collectors.toList())
-        room.users.forEach {
-            subscribers.contains(it.email)
-            message.reads.add(it)
-        }
         val newMessage = messageRepo.save(message)
         room.lastMessage = newMessage
         room.lastMessageAt = Date()

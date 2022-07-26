@@ -68,6 +68,9 @@ class UserService(
     fun addFriend(userId: String): User {
         val currentUser = getCurrentUser()
         val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        if (user == currentUser) {
+            throw RuntimeException("Невозможно добавить себя в друзья")
+        }
         currentUser.friends.add(user)
         return userRepo.save(currentUser)
     }
