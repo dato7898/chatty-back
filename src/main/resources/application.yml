@@ -9,11 +9,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: update
-  elasticsearch:
-    rest:
-      uris: ${ELASTICSEARCH_BONSAI_URI}
-      username: ${ELASTICSEARCH_BONSAI_USERNAME}
-      password: ${ELASTICSEARCH_BONSAI_PASSWORD}
   security:
     oauth2:
       client:
