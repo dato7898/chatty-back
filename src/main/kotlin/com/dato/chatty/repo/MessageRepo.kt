@@ -12,6 +12,6 @@ interface MessageRepo : JpaRepository<Message, Long> {
 
     fun countAllByRoomAndReadsNotContainsAndDeletedIsFalse(room: Room, user: User): Long
 
-    fun findAllByRoomAndReadsNotContainsAndDeletedIsFalse(roomId: Long, user: User): List<Message>
+    fun findAllByRoomIdAndReadsNotContainsAndDeletedIsFalse(roomId: Long, user: User): List<Message>
 
 }

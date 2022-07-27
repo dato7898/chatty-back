@@ -23,7 +23,7 @@ class MessageService(
     @Transactional
     fun setRead(roomId: Long) {
         val curUser = userService.getCurrentUser()
-        val messages = messageRepo.findAllByRoomAndReadsNotContainsAndDeletedIsFalse(roomId, curUser)
+        val messages = messageRepo.findAllByRoomIdAndReadsNotContainsAndDeletedIsFalse(roomId, curUser)
         messages.forEach {
             it.reads = it.reads.plus(curUser)
         }
