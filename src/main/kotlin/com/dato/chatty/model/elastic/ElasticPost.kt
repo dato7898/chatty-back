@@ -5,6 +5,6 @@ import org.springframework.data.elasticsearch.annotations.Document
 
 @Document(indexName = "post")
 data class ElasticPost(
-    @Id val id: String?,
+    @Id val id: Long?,
     val text: String
 )

@@ -6,10 +6,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 data class User(
-    var email: String,
-    var firstname: String,
-    var lastname: String,
-    var googleImgUrl: String?,
+    var email: String = "",
+    var firstname: String = "",
+    var lastname: String = "",
+    var googleImgUrl: String? = null,
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Role::class, fetch = FetchType.EAGER)
     @CollectionTable(name = "roles")
@@ -22,5 +22,5 @@ data class User(
     @JoinTable(name="friends")
     @JoinColumn(name="user_A_id", referencedColumnName="id")
     @JoinColumn(name="user_B_id", referencedColumnName="id")
-    var friends: ArrayList<User> = ArrayList()
+    var friends: Set<User> = HashSet()
 }

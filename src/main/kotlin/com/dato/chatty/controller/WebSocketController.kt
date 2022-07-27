@@ -21,7 +21,7 @@ class WebSocketController(
 ) {
 
     @MessageMapping("/message/{roomId}")
-    fun greeting(@DestinationVariable roomId: String, message: String, headers: StompHeaderAccessor) {
+    fun greeting(@DestinationVariable roomId: Long, message: String, headers: StompHeaderAccessor) {
         val user = Optional.ofNullable(headers.user).map(Principal::getName)
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         val userEmails = room.users.map { it.email }.toList()

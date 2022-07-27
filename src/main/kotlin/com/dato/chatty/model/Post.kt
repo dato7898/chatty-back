@@ -1,20 +1,24 @@
 package com.dato.chatty.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import java.util.Date
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToMany
 
-@Document
+@Entity
 data class Post(
-    val text: String,
-    var userId: Long?
+    var text: String = "",
+    var userId: Long? = null
 ) {
 
-    @Id
-    var id: String? = null
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
     var deleted = false
     var createdAt = Date()
     var editedAt = Date()
-    var fileIds = HashSet<String>()
+    @OneToMany
+    var files: Set<MessageFile> = HashSet()
 
 }

@@ -29,7 +29,7 @@ class FileController(
 
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("download/{fileId}")
-    fun downloadFile(@PathVariable fileId: String, response: HttpServletResponse) {
+    fun downloadFile(@PathVariable fileId: Long, response: HttpServletResponse) {
         fileService.downloadFile(fileId, response)
     }
 }

@@ -21,7 +21,7 @@ class FileService(
     private val messageRepo: MessageRepo
 ) {
 
-    fun filesByMessageId(messageId: String): List<MessageFile> {
+    fun filesByMessageId(messageId: Long): List<MessageFile> {
         val curUser = userService.getCurrentUser()
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)
@@ -29,7 +29,8 @@ class FileService(
         if (curUser.id != message.user?.id) {
             throw RuntimeException("Not allowed")
         }
-        return fileRepo.findAllByIdInAndStatus(message.fileIds, FileStatus.SAVED.name)
+        val fileIds = message.files.map { it.id }.toList()
+        return fileRepo.findAllByIdInAndStatus(fileIds, FileStatus.SAVED.name)
     }
 
     @Transactional
@@ -47,7 +48,7 @@ class FileService(
     }
 
     @Transactional
-    fun downloadFile(fileId: String, response: HttpServletResponse) {
+    fun downloadFile(fileId: Long, response: HttpServletResponse) {
         val messageFile = fileRepo.findById(fileId).orElseThrow {
             ResourceNotFoundException("MessageFile", "id", fileId)
         }
@@ -64,10 +65,10 @@ class FileService(
         response.flushBuffer()
     }
 
-    fun checkFilesAndSave(fileIds: Set<String>) {
+    fun checkFilesAndSave(files: Set<MessageFile>) {
         val curUser = userService.getCurrentUser()
-        fileIds.forEach {
-            val file = fileRepo.findById(it).orElseThrow { ResourceNotFoundException("MessageFile", "id", it) }
+        files.forEach {
+            val file = fileRepo.findById(it.id).orElseThrow { ResourceNotFoundException("MessageFile", "id", it) }
             if (curUser.id != file.senderId) {
                 throw RuntimeException("Not allowed")
             }

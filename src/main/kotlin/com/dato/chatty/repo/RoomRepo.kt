@@ -3,14 +3,16 @@ package com.dato.chatty.repo
 import com.dato.chatty.model.Room
 import com.dato.chatty.model.User
 import org.springframework.data.domain.Pageable
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface RoomRepo : MongoRepository<Room, String> {
+interface RoomRepo : JpaRepository<Room, Long> {
 
-    fun findByUsersContainsAndIsMultiChatIsFalse(users: List<User>): Optional<Room>
+    fun findByUsersContainsAndUsersContainsAndIsMultiChatIsFalse(user1: User, user2: User): Optional<Room>
 
-    fun findByIdAndUsers(roomId: String, user: User): Optional<Room>
+    fun findByUsersInAndIsMultiChatIsFalse(users: List<User>): Optional<Room>
+
+    fun findByIdAndUsers(roomId: Long, user: User): Optional<Room>
 
     fun findAllByUsersContainsOrderByLastMessageAtDesc(user: User, page: Pageable): List<Room>
 

@@ -4,7 +4,6 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Room
 import com.dato.chatty.repo.MessageRepo
 import com.dato.chatty.repo.RoomRepo
-import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,10 +19,10 @@ class RoomService(
     @Synchronized fun getRoomWithUser(userId: Long): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        return roomRepo.findByUsersContainsAndIsMultiChatIsFalse(listOf(curUser, user))
+        return roomRepo.findByUsersContainsAndUsersContainsAndIsMultiChatIsFalse(curUser, user)
             .orElseGet {
                 val room = Room()
-                room.users = arrayListOf(curUser, user)
+                room.users = setOf(curUser, user)
                 roomRepo.save(room)
             }
     }
@@ -33,24 +32,24 @@ class RoomService(
         val curUser = userService.getCurrentUser()
         val rooms = roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser, page)
         rooms.forEach {
-            it.unread = messageRepo.countAllUnread(it.id, listOf(curUser.id))
+            it.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(it, curUser)
         }
         return rooms
     }
 
     @Transactional
-    fun getRoomById(roomId: String): Room {
+    fun getRoomById(roomId: Long): Room {
         val curUser = userService.getCurrentUser()
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         if (!room.users.contains(curUser)) {
             throw RuntimeException("Not allowed")
         }
-        room.unread = messageRepo.countAllUnread(room.id, listOf(curUser.id))
+        room.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(room, curUser)
         return room
     }
 
     @Transactional
-    fun checkUserInRoom(roomId: String, email: String): Boolean {
+    fun checkUserInRoom(roomId: Long, email: String): Boolean {
         val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
         val room = roomRepo.findByIdAndUsers(roomId, user)
         return room.isPresent

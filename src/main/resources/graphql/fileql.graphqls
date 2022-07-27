@@ -1,5 +1,15 @@
 type MessageFile {
-    id: ID,
+    id: Int,
+    googleFileId: String,
+    contentType: String,
+    fileName: String,
+    senderId: String,
+    status: String,
+    fileType: String
+}
+
+input MetaMessageFile {
+    id: Int,
     googleFileId: String,
     contentType: String,
     fileName: String,
@@ -9,5 +19,5 @@ type MessageFile {
 }
 
 extend type Query {
-    messageFiles(messageId: String): [MessageFile]
+    messageFiles(messageId: Int): [MessageFile]
 }

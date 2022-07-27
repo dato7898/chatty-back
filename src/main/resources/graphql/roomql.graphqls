@@ -1,5 +1,5 @@
 type Room {
-    id: ID,
+    id: Int,
     users: [User],
     isMultiChat: Boolean
     lastMessage: Message,
@@ -7,7 +7,7 @@ type Room {
 }
 
 extend type Query {
-    roomByUserId(userId: String): Room
+    roomByUserId(userId: Int): Room
     myRooms(pageNum: Int, pageSize: Int): [Room]
-    roomById(roomId: String): Room
+    roomById(roomId: Int): Room
 }

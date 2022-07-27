@@ -12,7 +12,7 @@ class FileQueryResolver(
 ) : GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getMessageFiles(messageId: String): List<MessageFile> {
+    fun getMessageFiles(messageId: Long): List<MessageFile> {
         return fileService.filesByMessageId(messageId)
     }
 

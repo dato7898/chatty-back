@@ -13,7 +13,7 @@ class RoomQueryResolver(
 ) : GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getRoomByUserId(userId: String): Room {
+    fun getRoomByUserId(userId: Long): Room {
         return roomService.getRoomWithUser(userId)
     }
 
@@ -23,7 +23,7 @@ class RoomQueryResolver(
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getRoomById(roomId: String): Room {
+    fun getRoomById(roomId: Long): Room {
         return roomService.getRoomById(roomId)
     }
 

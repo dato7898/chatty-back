@@ -1,10 +1,10 @@
 package com.dato.chatty.repo
 
 import com.dato.chatty.model.MessageFile
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface FileRepo : MongoRepository<MessageFile, String> {
+interface FileRepo : JpaRepository<MessageFile, Long> {
 
-    fun findAllByIdInAndStatus(ids: HashSet<String>, status: String): List<MessageFile>
+    fun findAllByIdInAndStatus(ids: List<Long?>, status: String): List<MessageFile>
 
 }

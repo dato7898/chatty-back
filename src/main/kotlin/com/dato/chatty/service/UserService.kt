@@ -69,7 +69,7 @@ class UserService(
         if (user == currentUser) {
             throw RuntimeException("Невозможно добавить себя в друзья")
         }
-        currentUser.friends.add(user)
+        currentUser.friends = currentUser.friends.plus(user)
         return userRepo.save(currentUser)
     }
 
@@ -77,7 +77,7 @@ class UserService(
     fun deleteFriend(userId: Long): User {
         val currentUser = getCurrentUser()
         val user = userRepo.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
-        currentUser.friends.remove(user)
+        currentUser.friends = currentUser.friends.minus(user)
         return userRepo.save(currentUser)
     }
 

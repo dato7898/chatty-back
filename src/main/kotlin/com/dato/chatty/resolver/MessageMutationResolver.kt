@@ -12,22 +12,22 @@ class MessageMutationResolver(
 ) : GraphQLMutationResolver {
 
     @PreAuthorize("hasAuthority('USER')")
-    fun addMessageToUser(message: Message, userId: String): Message {
+    fun addMessageToUser(message: Message, userId: Long): Message {
         return messageService.addMessageToUser(message, userId)
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun addMessageToRoom(message: Message, roomId: String): Message {
+    fun addMessageToRoom(message: Message, roomId: Long): Message {
         return messageService.addMessageToRoom(message, roomId)
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun deleteMessage(messageId: String): Boolean {
+    fun deleteMessage(messageId: Long): Boolean {
         return messageService.deleteMessage(messageId)
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun setRead(roomId: String): Boolean {
+    fun setRead(roomId: Long): Boolean {
         messageService.setRead(roomId)
         return true
     }

@@ -12,7 +12,7 @@ interface UserRepo : JpaRepository<User, Long> {
 
     fun findAllByFriendsContaining(user: User, page: Pageable): List<User>
 
-    @Query("FROM users WHERE lower(email) LIKE ANY (?0) OR lower(firstname) LIKE ANY (?0) OR lower(lastname) LIKE ANY (?0)")
+    @Query("FROM User WHERE lower(email) LIKE (?1) OR lower(firstname) LIKE (?1) OR lower(lastname) LIKE (?1)")
     fun findUsers(search: Set<String>, page: Pageable): List<User>
 
 }

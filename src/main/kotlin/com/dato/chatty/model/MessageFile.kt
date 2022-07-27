@@ -7,10 +7,10 @@ import javax.persistence.Id
 
 @Entity
 class MessageFile(
-    var googleFileId: String,
-    var contentType: String?,
-    var fileName: String?,
-    var senderId: Long?
+    var googleFileId: String = "",
+    var contentType: String? = null,
+    var fileName: String? = null,
+    var senderId: Long? = null
 ) {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

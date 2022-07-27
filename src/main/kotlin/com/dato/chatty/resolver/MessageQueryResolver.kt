@@ -13,12 +13,12 @@ class MessageQueryResolver(
 ) : GraphQLQueryResolver {
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getMessagesByUserId(userId: String, pageNum: Int, pageSize: Int): List<Message> {
+    fun getMessagesByUserId(userId: Long, pageNum: Int, pageSize: Int): List<Message> {
         return messageService.getMessagesWithUser(userId, PageRequest.of(pageNum, pageSize))
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    fun getMessagesByRoomId(roomId: String, pageNum: Int, pageSize: Int): List<Message> {
+    fun getMessagesByRoomId(roomId: Long, pageNum: Int, pageSize: Int): List<Message> {
         return messageService.getMessagesByRoomId(roomId, PageRequest.of(pageNum, pageSize))
     }
 

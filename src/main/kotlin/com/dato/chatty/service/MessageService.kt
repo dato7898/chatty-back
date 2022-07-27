@@ -4,7 +4,6 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
 import com.dato.chatty.repo.RoomRepo
-import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,24 +21,24 @@ class MessageService(
     // Тут возможна ошибка, что setRead отработает раньше чем сообщение добавится в базу
     // Фикс заключается в отправке сообщений в сокеты через бэк, когда сообщение уже сохранилось в базу, а не на клиенте
     @Transactional
-    fun setRead(roomId: String) {
+    fun setRead(roomId: Long) {
         val curUser = userService.getCurrentUser()
-        val messages = messageRepo.getAllUnread(ObjectId(roomId), listOf(ObjectId(curUser.id)))
+        val messages = messageRepo.findAllByRoomAndReadsNotContainsAndDeletedIsFalse(roomId, curUser)
         messages.forEach {
-            it.reads.add(curUser)
+            it.reads = it.reads.plus(curUser)
         }
         messageRepo.saveAll(messages)
     }
 
     @Transactional
-    fun getMessagesWithUser(userId: String, page: Pageable): List<Message> {
+    fun getMessagesWithUser(userId: Long, page: Pageable): List<Message> {
         val room = roomService.getRoomWithUser(userId)
         val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
         return messages.reversed()
     }
 
     @Transactional
-    fun getMessagesByRoomId(roomId: String, page: Pageable): List<Message> {
+    fun getMessagesByRoomId(roomId: Long, page: Pageable): List<Message> {
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         val curUser = userService.getCurrentUser()
         if (!room.users.contains(curUser)) {
@@ -48,7 +47,7 @@ class MessageService(
         val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
         messages.forEach {
             if (!it.reads.contains(curUser)) {
-                it.reads.add(curUser)
+                it.reads = it.reads.plus(curUser)
             }
         }
         messageRepo.saveAll(messages)
@@ -56,12 +55,12 @@ class MessageService(
     }
 
     @Transactional
-    fun addMessageToUser(message: Message, userId: String): Message {
+    fun addMessageToUser(message: Message, userId: Long): Message {
         if (message.text.isBlank()) {
             throw RuntimeException("Message text cannot be empty")
         }
         val curUser = userService.getCurrentUser()
-        fileService.checkFilesAndSave(message.fileIds)
+        fileService.checkFilesAndSave(message.files)
         val room = roomService.getRoomWithUser(userId)
         room.lastMessageAt = Date()
         message.room = room
@@ -70,16 +69,16 @@ class MessageService(
     }
 
     @Transactional
-    fun addMessageToRoom(message: Message, roomId: String): Message {
+    fun addMessageToRoom(message: Message, roomId: Long): Message {
         if (message.text.isBlank()) {
             throw RuntimeException("Message text cannot be empty")
         }
         val curUser = userService.getCurrentUser()
-        fileService.checkFilesAndSave(message.fileIds)
+        fileService.checkFilesAndSave(message.files)
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         message.room = room
         message.user = curUser
-        message.reads = arrayListOf(curUser)
+        message.reads = setOf(curUser)
         val newMessage = messageRepo.save(message)
         room.lastMessage = newMessage
         room.lastMessageAt = Date()
@@ -88,7 +87,7 @@ class MessageService(
     }
 
     @Transactional
-    fun deleteMessage(messageId: String): Boolean {
+    fun deleteMessage(messageId: Long): Boolean {
         val curUser = userService.getCurrentUser()
         val message = messageRepo.findById(messageId).orElseThrow {
             ResourceNotFoundException("Message", "id", messageId)

@@ -1,13 +1,8 @@
 package com.dato.chatty.model
 
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToMany
-import javax.persistence.OneToOne
-import kotlin.collections.ArrayList
+import javax.persistence.*
+import kotlin.collections.HashSet
 
 @Entity
 class Room {
@@ -15,8 +10,8 @@ class Room {
     var id: Long? = null
     var name = ""
     var imageUrl = ""
-    @OneToMany
-    var users = ArrayList<User>()
+    @ManyToMany(fetch = FetchType.EAGER)
+    var users: Set<User> = HashSet()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
     var createdAt = Date()

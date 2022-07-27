@@ -18,14 +18,14 @@ class PostService(
 
     @Transactional
     fun fetchPosts(text: String, pageable: Pageable): List<Post> {
-        val ids: HashSet<String?> = elasticPostRepo.findByText(text, pageable).map { it.id }.toHashSet()
+        val ids: HashSet<Long?> = elasticPostRepo.findByText(text, pageable).map { it.id }.toHashSet()
         return postRepo.findAllByIdIn(ids)
     }
 
     @Transactional
     fun addPost(post: Post): Post {
         val curUser = userService.getCurrentUser()
-        fileService.checkFilesAndSave(post.fileIds)
+        fileService.checkFilesAndSave(post.files)
         post.userId = curUser.id
         val newPost = postRepo.save(post)
         elasticPostRepo.save(ElasticPost(newPost.id, newPost.text))

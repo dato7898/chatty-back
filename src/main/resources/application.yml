@@ -1,23 +1,23 @@
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-3-222-74-92.compute-1.amazonaws.com:5432/darevrb4nvlt5i
-    username: hxzlwnyyapyglk
-    password: d57077edeb453adb784a70568a9b541ab0b43ae7809a6de7c67fdfc6bc8bb599
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   elasticsearch:
     rest:
       uris: ${ELASTICSEARCH_BONSAI_URI}
       username: ${ELASTICSEARCH_BONSAI_USERNAME}
       password: ${ELASTICSEARCH_BONSAI_PASSWORD}
-  data:
-    mongodb:
-      uri: ${MONGODB_URI}
-      database: chatty
   security:
     oauth2:
       client:

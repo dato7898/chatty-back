@@ -54,7 +54,7 @@ class AuthChannelInterceptorAdapter(
             val destinationUrl = accessor.getHeader("simpDestination").toString()
             if (destinationUrl.startsWith("/app/message/")) {
                 val roomId = destinationUrl.substring(13)
-                if (!roomService.checkUserInRoom(roomId, curEmail)) {
+                if (!roomService.checkUserInRoom(roomId.toLong(), curEmail)) {
                     throw RuntimeException("Not allowed")
                 }
             }
