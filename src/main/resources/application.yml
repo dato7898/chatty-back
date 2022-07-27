@@ -9,10 +9,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
   elasticsearch:
     rest:
       uris: ${ELASTICSEARCH_BONSAI_URI}
