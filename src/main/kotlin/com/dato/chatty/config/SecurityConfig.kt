@@ -24,7 +24,6 @@ class SecurityConfig(
     private val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
     private val oAuth2AuthenticationFailureHandler: OAuth2AuthenticationFailureHandler,
     private val tokenAuthenticationFilter: TokenAuthenticationFilter
-
 ) {
 
     @Bean

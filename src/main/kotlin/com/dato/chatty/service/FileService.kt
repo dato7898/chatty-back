@@ -1,5 +1,6 @@
 package com.dato.chatty.service
 
+import com.dato.chatty.exception.NotAllowedException
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.google.drive.GoogleDriveService
 import com.dato.chatty.model.FileStatus
@@ -27,7 +28,7 @@ class FileService(
             ResourceNotFoundException("Message", "id", messageId)
         }
         if (curUser.id != message.user?.id) {
-            throw RuntimeException("Not allowed")
+            throw NotAllowedException("That not your own message")
         }
         val fileIds = message.files.map { it.id }.toList()
         return fileRepo.findAllByIdInAndStatus(fileIds, FileStatus.SAVED.name)
@@ -52,10 +53,11 @@ class FileService(
         val messageFile = fileRepo.findById(fileId).orElseThrow {
             ResourceNotFoundException("MessageFile", "id", fileId)
         }
-        val curUser = userService.getCurrentUser()
+        // TODO исправить, сделать проверку на комнату
+        /*val curUser = userService.getCurrentUser()
         if (curUser.id != messageFile.senderId) {
-            throw RuntimeException("Not allowed")
-        }
+            throw NotAllowedException("That not your own file")
+        }*/
         response.contentType = messageFile.contentType
         response.setHeader("Content-Disposition", "attachment;filename=" + messageFile.fileName)
         val baos = googleDriveService.downloadFile(messageFile.googleFileId)
@@ -70,7 +72,7 @@ class FileService(
         files.forEach {
             val file = fileRepo.findById(it.id).orElseThrow { ResourceNotFoundException("MessageFile", "id", it) }
             if (curUser.id != file.senderId) {
-                throw RuntimeException("Not allowed")
+                throw NotAllowedException("That not your own file")
             }
             file.status = FileStatus.SAVED.name
             fileRepo.save(file)

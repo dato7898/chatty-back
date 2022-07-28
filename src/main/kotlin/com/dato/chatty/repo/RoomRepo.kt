@@ -2,7 +2,6 @@ package com.dato.chatty.repo
 
 import com.dato.chatty.model.Room
 import com.dato.chatty.model.User
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -19,6 +18,6 @@ interface RoomRepo : JpaRepository<Room, Long> {
             "SELECT * FROM room r JOIN max_date md ON r.id = md.room_id " +
             "WHERE :userId IN (SELECT ru.users_id FROM room_users ru WHERE r.id=ru.room_id) " +
             "ORDER BY md.createdAt DESC", nativeQuery = true)
-    fun findRoomsByUserId(@Param("userId") userId: Long?, page: Pageable): List<Room>
+    fun findRoomsByUserId(@Param("userId") userId: Long?): List<Room>
 
 }

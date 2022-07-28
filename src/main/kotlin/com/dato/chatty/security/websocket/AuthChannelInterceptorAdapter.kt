@@ -1,5 +1,6 @@
 package com.dato.chatty.security.websocket
 
+import com.dato.chatty.exception.NotAllowedException
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.repo.RoomRepo
 import com.dato.chatty.repo.UserRepo
@@ -47,7 +48,7 @@ class AuthChannelInterceptorAdapter(
             if (match != null) {
                 val (email) = match.destructured
                 if (email != curEmail) {
-                    throw RuntimeException("Not allowed")
+                    throw NotAllowedException("You cannot subscribe to another user messaging")
                 }
             }
         }
@@ -60,7 +61,7 @@ class AuthChannelInterceptorAdapter(
                 val user = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
                 val room = roomRepo.findByIdAndUsersContains(roomId.toLong(), user)
                 if (!room.isPresent) {
-                    throw RuntimeException("Not allowed")
+                    throw NotAllowedException("You are not in room")
                 }
             }
         }

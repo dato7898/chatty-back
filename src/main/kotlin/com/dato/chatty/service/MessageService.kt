@@ -1,5 +1,6 @@
 package com.dato.chatty.service
 
+import com.dato.chatty.exception.NotAllowedException
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
@@ -42,7 +43,7 @@ class MessageService(
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         val curUser = userService.getCurrentUser()
         if (!room.users.contains(curUser)) {
-            throw RuntimeException("Not allowed")
+            throw NotAllowedException("You are not in room")
         }
         val messages = messageRepo.findAllByRoomAndDeletesNotContainsOrderByCreatedAtDesc(room, curUser, page)
         messages.forEach {
@@ -96,7 +97,7 @@ class MessageService(
             ResourceNotFoundException("Message", "id", messageId)
         }
         if (message.user?.id != curUser.id) {
-            throw RuntimeException("Operation not allowed")
+            throw throw NotAllowedException("That not your own message")
         }
         message.deletes = message.deletes.plus(curUser)
         messageRepo.save(message)

@@ -1,10 +1,10 @@
 package com.dato.chatty.service
 
+import com.dato.chatty.exception.NotAllowedException
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Room
 import com.dato.chatty.repo.MessageRepo
 import com.dato.chatty.repo.RoomRepo
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,9 +28,9 @@ class RoomService(
     }
 
     @Transactional
-    fun getMyRooms(page: Pageable): List<Room> {
+    fun getMyRooms(pageNum: Int, pageSize: Int): List<Room> {
         val curUser = userService.getCurrentUser()
-        var rooms = roomRepo.findRoomsByUserId(curUser.id, page)
+        var rooms = roomRepo.findRoomsByUserId(curUser.id)
         rooms.forEach {
             it.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletesNotContains(it, curUser, curUser)
             it.users = userService.usersOnline(it.users).toSet()
@@ -48,7 +48,7 @@ class RoomService(
         val curUser = userService.getCurrentUser()
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         if (!room.users.contains(curUser)) {
-            throw RuntimeException("Not allowed")
+            throw NotAllowedException("You are not in room")
         }
         room.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletesNotContains(room, curUser, curUser)
         return room
@@ -59,7 +59,7 @@ class RoomService(
         val curUser = userService.getCurrentUser()
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         if (!room.users.contains(curUser)) {
-            throw RuntimeException("Not allowed")
+            throw NotAllowedException("You are not in room")
         }
         val messages = messageRepo.findAllByRoomAndDeletesNotContains(room, curUser)
         messages.forEach {

@@ -10,7 +10,7 @@ object CookieUtils {
 
     fun getCookie(request: HttpServletRequest, name: String): Optional<Cookie> {
         val cookies = request.cookies
-        if (cookies != null && cookies.size > 0) {
+        if (cookies != null && cookies.isNotEmpty()) {
             for (cookie in cookies) {
                 if (cookie.name == name) {
                     return Optional.of(cookie)
@@ -30,7 +30,7 @@ object CookieUtils {
 
     fun deleteCookie(request: HttpServletRequest, response: HttpServletResponse, name: String) {
         val cookies = request.cookies
-        if (cookies != null && cookies.size > 0) {
+        if (cookies != null && cookies.isNotEmpty()) {
             for (cookie in cookies) {
                 if (cookie.name == name) {
                     cookie.value = ""
