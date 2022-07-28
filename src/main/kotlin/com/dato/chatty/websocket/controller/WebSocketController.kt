@@ -1,4 +1,4 @@
-package com.dato.chatty.controller
+package com.dato.chatty.websocket.controller
 
 import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.repo.RoomRepo
