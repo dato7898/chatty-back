@@ -16,7 +16,7 @@ class RoomService(
 ) {
 
     @Transactional
-    @Synchronized fun getRoomWithUser(userId: Long): Room {
+    fun getRoomWithUser(userId: Long): Room {
         val curUser = userService.getCurrentUser()
         val user = userService.findById(userId).orElseThrow { ResourceNotFoundException("User", "id", userId) }
         return roomRepo.findByUsersContainsAndUsersContainsAndIsMultiChatIsFalse(curUser, user)

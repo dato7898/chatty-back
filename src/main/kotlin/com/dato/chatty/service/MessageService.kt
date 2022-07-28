@@ -4,10 +4,10 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.repo.MessageRepo
 import com.dato.chatty.repo.RoomRepo
+import com.dato.chatty.websocket.controller.WebSocketController
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class MessageService(
@@ -15,11 +15,10 @@ class MessageService(
     private val roomService: RoomService,
     private val userService: UserService,
     private val fileService: FileService,
-    private val roomRepo: RoomRepo
+    private val roomRepo: RoomRepo,
+    private val webSocketController: WebSocketController
 ) {
 
-    // Тут возможна ошибка, что setRead отработает раньше чем сообщение добавится в базу
-    // Фикс заключается в отправке сообщений в сокеты через бэк, когда сообщение уже сохранилось в базу, а не на клиенте
     @Transactional
     fun setRead(roomId: Long) {
         val curUser = userService.getCurrentUser()
@@ -68,6 +67,7 @@ class MessageService(
         val newMessage = messageRepo.save(message)
         room.messages = room.messages.plus(newMessage)
         roomRepo.save(room)
+        webSocketController.sendMessage(message)
         return newMessage
     }
 
@@ -85,6 +85,7 @@ class MessageService(
         val newMessage = messageRepo.save(message)
         room.messages = room.messages.plus(newMessage)
         roomRepo.save(room)
+        webSocketController.sendMessage(message)
         return newMessage
     }
 

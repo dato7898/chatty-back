@@ -1,9 +1,9 @@
 package com.dato.chatty.websocket.listener
 
 import com.dato.chatty.exception.ResourceNotFoundException
+import com.dato.chatty.model.WsMsgWrap
 import com.dato.chatty.repo.UserRepo
 import com.dato.chatty.security.UserPrincipal
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
@@ -23,8 +23,6 @@ class WebSocketEventListener(
     private var userRepo: UserRepo
 ) {
 
-    private val objectMapper = ObjectMapper()
-
     @EventListener
     fun handleWebSocketConnectListener(event: SessionConnectedEvent) {
         send("ONLINE", event)
@@ -42,11 +40,10 @@ class WebSocketEventListener(
         val curUser = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
         curUser.friends = emptySet()
         curUser.online = true
-        val jsonUser = objectMapper.writeValueAsString(curUser)
         simpUserRegistry.users.stream()
             .map(SimpUser::getName)
             .forEach {
-                messagingTemplate.convertAndSendToUser(it, "/msg", "{\"type\":\"$type\",\"payload\":$jsonUser}")
+                messagingTemplate.convertAndSendToUser(it, "/msg", WsMsgWrap(type, curUser))
             }
     }
 
