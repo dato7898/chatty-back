@@ -30,11 +30,16 @@ class RoomService(
     @Transactional
     fun getMyRooms(page: Pageable): List<Room> {
         val curUser = userService.getCurrentUser()
-        val rooms = roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser, page)
+        var rooms = roomRepo.findRoomsByUserId(curUser.id, page)
         rooms.forEach {
-            it.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(it, curUser)
+            it.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletesNotContains(it, curUser, curUser)
             it.users = userService.usersOnline(it.users).toSet()
+            it.lastMessage = messageRepo
+                .findFirstByRoomAndDeletesNotContainsOrderByCreatedAtDesc(it, curUser)
+                .orElse(null)
         }
+        rooms = rooms.toMutableList()
+        rooms.removeAll { it.lastMessage == null }
         return rooms
     }
 
@@ -45,8 +50,22 @@ class RoomService(
         if (!room.users.contains(curUser)) {
             throw RuntimeException("Not allowed")
         }
-        room.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(room, curUser)
+        room.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletesNotContains(room, curUser, curUser)
         return room
+    }
+
+    @Transactional
+    fun deleteRoom(roomId: Long) {
+        val curUser = userService.getCurrentUser()
+        val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
+        if (!room.users.contains(curUser)) {
+            throw RuntimeException("Not allowed")
+        }
+        val messages = messageRepo.findAllByRoomAndDeletesNotContains(room, curUser)
+        messages.forEach {
+            it.deletes = it.deletes.plus(curUser)
+        }
+        messageRepo.saveAll(messages)
     }
 
 }

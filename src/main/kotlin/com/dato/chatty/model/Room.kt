@@ -17,10 +17,12 @@ class Room {
     var deleted: Boolean = false
     var createdAt = Date()
     var editedAt = Date()
-    var lastMessageAt = Date()
-    @OneToOne
+    @Transient
+    @JsonInclude
     var lastMessage: Message? = null
     @Transient
     @JsonInclude
     var unread = 0L
+    @OneToMany
+    var messages: Set<Message> = setOf()
 }

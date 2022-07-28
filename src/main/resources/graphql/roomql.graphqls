@@ -11,3 +11,7 @@ extend type Query {
     myRooms(pageNum: Int, pageSize: Int): [Room]
     roomById(roomId: Int): Room
 }
+
+extend type Mutation {
+    deleteRoom(roomId: Int): Boolean
+}

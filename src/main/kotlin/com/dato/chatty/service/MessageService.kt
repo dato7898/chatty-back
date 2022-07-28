@@ -23,7 +23,7 @@ class MessageService(
     @Transactional
     fun setRead(roomId: Long) {
         val curUser = userService.getCurrentUser()
-        val messages = messageRepo.findAllByRoomIdAndReadsNotContainsAndDeletedIsFalse(roomId, curUser)
+        val messages = messageRepo.findAllByRoomIdAndReadsNotContainsAndDeletesNotContains(roomId, curUser, curUser)
         messages.forEach {
             it.reads = it.reads.plus(curUser)
         }
@@ -33,7 +33,8 @@ class MessageService(
     @Transactional
     fun getMessagesWithUser(userId: Long, page: Pageable): List<Message> {
         val room = roomService.getRoomWithUser(userId)
-        val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
+        val curUser = userService.getCurrentUser()
+        val messages = messageRepo.findAllByRoomAndDeletesNotContainsOrderByCreatedAtDesc(room, curUser, page)
         return messages.reversed()
     }
 
@@ -44,7 +45,7 @@ class MessageService(
         if (!room.users.contains(curUser)) {
             throw RuntimeException("Not allowed")
         }
-        val messages = messageRepo.findAllByRoomAndDeletedIsFalseOrderByCreatedAtDesc(room, page)
+        val messages = messageRepo.findAllByRoomAndDeletesNotContainsOrderByCreatedAtDesc(room, curUser, page)
         messages.forEach {
             if (!it.reads.contains(curUser)) {
                 it.reads = it.reads.plus(curUser)
@@ -62,10 +63,12 @@ class MessageService(
         val curUser = userService.getCurrentUser()
         fileService.checkFilesAndSave(message.files)
         val room = roomService.getRoomWithUser(userId)
-        room.lastMessageAt = Date()
         message.room = room
         message.user = curUser
-        return messageRepo.save(message)
+        val newMessage = messageRepo.save(message)
+        room.messages = room.messages.plus(newMessage)
+        roomRepo.save(room)
+        return newMessage
     }
 
     @Transactional
@@ -80,8 +83,7 @@ class MessageService(
         message.user = curUser
         message.reads = setOf(curUser)
         val newMessage = messageRepo.save(message)
-        room.lastMessage = newMessage
-        room.lastMessageAt = Date()
+        room.messages = room.messages.plus(newMessage)
         roomRepo.save(room)
         return newMessage
     }
@@ -95,7 +97,7 @@ class MessageService(
         if (message.user?.id != curUser.id) {
             throw RuntimeException("Operation not allowed")
         }
-        message.deleted = true
+        message.deletes = message.deletes.plus(curUser)
         messageRepo.save(message)
         return true
     }

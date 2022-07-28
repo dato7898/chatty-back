@@ -58,7 +58,7 @@ class AuthChannelInterceptorAdapter(
             if (destinationUrl.startsWith("/app/message/")) {
                 val roomId = destinationUrl.substring(13)
                 val user = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
-                val room = roomRepo.findByIdAndUsers(roomId.toLong(), user)
+                val room = roomRepo.findByIdAndUsersContains(roomId.toLong(), user)
                 if (!room.isPresent) {
                     throw RuntimeException("Not allowed")
                 }

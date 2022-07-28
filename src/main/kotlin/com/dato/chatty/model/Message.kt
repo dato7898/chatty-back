@@ -21,7 +21,6 @@ class Message(
     var editedAt = Date()
     @ManyToMany
     var reads: Set<User> = HashSet()
-    override fun toString(): String {
-        return "Message(user=$user, room=$room, text='$text', id=$id, deleted=$deleted, files=$files, createdAt=$createdAt, editedAt=$editedAt, reads=$reads)"
-    }
+    @ManyToMany
+    var deletes: Set<User> = HashSet()
 }

@@ -19,10 +19,7 @@ data class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 ) {
-    @OneToMany
-    @JoinTable(name="friends")
-    @JoinColumn(name="user_A_id", referencedColumnName="id")
-    @JoinColumn(name="user_B_id", referencedColumnName="id")
+    @ManyToMany
     var friends: Set<User> = HashSet()
     @Transient
     @JsonInclude
