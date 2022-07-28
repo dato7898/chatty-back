@@ -33,6 +33,7 @@ class RoomService(
         val rooms = roomRepo.findAllByUsersContainsOrderByLastMessageAtDesc(curUser, page)
         rooms.forEach {
             it.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(it, curUser)
+            it.users = userService.usersOnline(it.users).toSet()
         }
         return rooms
     }
@@ -46,13 +47,6 @@ class RoomService(
         }
         room.unread = messageRepo.countAllByRoomAndReadsNotContainsAndDeletedIsFalse(room, curUser)
         return room
-    }
-
-    @Transactional
-    fun checkUserInRoom(roomId: Long, email: String): Boolean {
-        val user = userService.findByEmail(email).orElseThrow { ResourceNotFoundException("User", "email", email) }
-        val room = roomRepo.findByIdAndUsers(roomId, user)
-        return room.isPresent
     }
 
 }

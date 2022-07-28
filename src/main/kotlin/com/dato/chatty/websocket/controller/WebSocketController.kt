@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.user.SimpUserRegistry
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 import java.util.Optional
-import java.util.stream.Collectors
 
 @RestController
 class WebSocketController(
@@ -26,14 +25,12 @@ class WebSocketController(
         val room = roomRepo.findById(roomId).orElseThrow { ResourceNotFoundException("Room", "id", roomId) }
         val userEmails = room.users.map { it.email }.toList()
         if (user.isPresent) {
-            val subscribers = simpUserRegistry.users.stream()
+            simpUserRegistry.users.stream()
                 .map(SimpUser::getName)
                 .filter { user.get() != it && userEmails.contains(it) }
-                .collect(Collectors.toList())
-
-            subscribers.forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg", message)
-            }
+                .forEach {
+                    simpMessagingTemplate.convertAndSendToUser(it, "/msg", message)
+                }
         }
     }
 

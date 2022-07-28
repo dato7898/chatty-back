@@ -1,5 +1,6 @@
 package com.dato.chatty.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.Collections
 import javax.persistence.*
 
@@ -23,4 +24,7 @@ data class User(
     @JoinColumn(name="user_A_id", referencedColumnName="id")
     @JoinColumn(name="user_B_id", referencedColumnName="id")
     var friends: Set<User> = HashSet()
+    @Transient
+    @JsonInclude
+    var online = false
 }

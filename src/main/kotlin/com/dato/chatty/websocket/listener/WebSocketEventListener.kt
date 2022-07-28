@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.socket.messaging.AbstractSubProtocolEvent
 import org.springframework.web.socket.messaging.SessionConnectedEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
-import java.util.stream.Collectors
 
 
 @Component
@@ -42,13 +41,13 @@ class WebSocketEventListener(
         val curEmail = (currentAuthentication.principal as UserPrincipal).name
         val curUser = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
         curUser.friends = emptySet()
+        curUser.online = true
         val jsonUser = objectMapper.writeValueAsString(curUser)
-        val subscribers = simpUserRegistry.users.stream()
+        simpUserRegistry.users.stream()
             .map(SimpUser::getName)
-            .collect(Collectors.toList())
-        subscribers.forEach {
-            messagingTemplate.convertAndSendToUser(it, "/msg", "{\"type\":\"$type\",\"payload\":$jsonUser}")
-        }
+            .forEach {
+                messagingTemplate.convertAndSendToUser(it, "/msg", "{\"type\":\"$type\",\"payload\":$jsonUser}")
+            }
     }
 
 }

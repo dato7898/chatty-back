@@ -1,9 +1,11 @@
 package com.dato.chatty.security.websocket
 
+import com.dato.chatty.exception.ResourceNotFoundException
+import com.dato.chatty.repo.RoomRepo
+import com.dato.chatty.repo.UserRepo
 import com.dato.chatty.security.CustomOidcUserService
 import com.dato.chatty.security.UserPrincipal
 import com.dato.chatty.security.token.TokenProvider
-import com.dato.chatty.service.RoomService
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.stomp.StompCommand
@@ -18,7 +20,8 @@ import org.springframework.util.StringUtils
 class AuthChannelInterceptorAdapter(
     private val tokenProvider: TokenProvider,
     private val customOidcUserService: CustomOidcUserService,
-    private val roomService: RoomService
+    private val userRepo: UserRepo,
+    private val roomRepo: RoomRepo
 ) : ChannelInterceptor {
 
     override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
@@ -54,7 +57,9 @@ class AuthChannelInterceptorAdapter(
             val destinationUrl = accessor.getHeader("simpDestination").toString()
             if (destinationUrl.startsWith("/app/message/")) {
                 val roomId = destinationUrl.substring(13)
-                if (!roomService.checkUserInRoom(roomId.toLong(), curEmail)) {
+                val user = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
+                val room = roomRepo.findByIdAndUsers(roomId.toLong(), user)
+                if (!room.isPresent) {
                     throw RuntimeException("Not allowed")
                 }
             }

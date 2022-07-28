@@ -1,5 +1,6 @@
 package com.dato.chatty.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.*
 import javax.persistence.*
 import kotlin.collections.HashSet
@@ -19,5 +20,7 @@ class Room {
     var lastMessageAt = Date()
     @OneToOne
     var lastMessage: Message? = null
+    @Transient
+    @JsonInclude
     var unread = 0L
 }
