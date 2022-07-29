@@ -4,6 +4,7 @@ import com.dato.chatty.exception.ResourceNotFoundException
 import com.dato.chatty.model.Message
 import com.dato.chatty.model.WsMsgWrap
 import com.dato.chatty.repo.RoomRepo
+import com.dato.chatty.util.CopyUtil
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -39,17 +40,18 @@ class WebSocketController(
 
     @Async
     fun sendMessage(message: Message) {
-        val userEmails = message.room?.users?.map {
+        val messageCopy = CopyUtil.deepCopy(message)
+        val userEmails = messageCopy?.room?.users?.map {
             it.friends = setOf()
             it.email
         }?.toList()
-        message.user?.friends = setOf()
-        message.room?.messages = setOf()
+        messageCopy?.user?.friends = setOf()
+        messageCopy?.room?.messages = setOf()
         simpUserRegistry.users.stream()
             .map(SimpUser::getName)
-            .filter { message.user?.email != it && userEmails?.contains(it) == true }
+            .filter { messageCopy?.user?.email != it && userEmails?.contains(it) == true }
             .forEach {
-                simpMessagingTemplate.convertAndSendToUser(it, "/msg", WsMsgWrap("MESSAGE", message))
+                simpMessagingTemplate.convertAndSendToUser(it, "/msg", WsMsgWrap("MESSAGE", messageCopy))
             }
     }
 

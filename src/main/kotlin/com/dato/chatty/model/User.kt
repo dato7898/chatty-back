@@ -1,6 +1,7 @@
 package com.dato.chatty.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.io.Serializable
 import java.util.Collections
 import javax.persistence.*
 
@@ -18,7 +19,7 @@ data class User(
     var deleted: Boolean = false,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-) {
+) : Serializable {
     @ManyToMany
     var friends: Set<User> = HashSet()
     @Transient

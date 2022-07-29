@@ -1,5 +1,6 @@
 package com.dato.chatty.model
 
+import java.io.Serializable
 import java.time.OffsetDateTime
 import javax.persistence.*
 import kotlin.collections.HashSet
@@ -11,7 +12,7 @@ class Message(
     @ManyToOne
     var room: Room? = null,
     var text: String = ""
-) {
+) : Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
     var deleted: Boolean = false

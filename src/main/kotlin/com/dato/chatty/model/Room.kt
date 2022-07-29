@@ -1,12 +1,13 @@
 package com.dato.chatty.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.io.Serializable
 import java.time.OffsetDateTime
 import javax.persistence.*
 import kotlin.collections.HashSet
 
 @Entity
-class Room {
+class Room : Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
     var name = ""
