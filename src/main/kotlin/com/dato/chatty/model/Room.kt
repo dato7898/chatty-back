@@ -1,8 +1,7 @@
 package com.dato.chatty.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import java.time.LocalDateTime
-import java.util.*
+import java.time.OffsetDateTime
 import javax.persistence.*
 import kotlin.collections.HashSet
 
@@ -16,8 +15,8 @@ class Room {
     var users: Set<User> = HashSet()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
-    var createdAt = LocalDateTime.now()
-    var editedAt = LocalDateTime.now()
+    var createdAt = OffsetDateTime.now()
+    var editedAt = OffsetDateTime.now()
     @Transient
     @JsonInclude
     var lastMessage: Message? = null
