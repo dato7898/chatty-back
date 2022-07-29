@@ -1,6 +1,7 @@
 package com.dato.chatty.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 import kotlin.collections.HashSet
@@ -15,12 +16,8 @@ class Room {
     var users: Set<User> = HashSet()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
-    @Column(name = "created_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var createdAt = Date()
-    @Column(name = "edited_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var editedAt = Date()
+    var createdAt = LocalDateTime.now()
+    var editedAt = LocalDateTime.now()
     @Transient
     @JsonInclude
     var lastMessage: Message? = null

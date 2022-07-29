@@ -1,6 +1,6 @@
 package com.dato.chatty.model
 
-import java.util.Date
+import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -12,12 +12,8 @@ data class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
     var deleted = false
-    @Column(name = "created_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var createdAt = Date()
-    @Column(name = "edited_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var editedAt = Date()
+    var createdAt = LocalDateTime.now()
+    var editedAt = LocalDateTime.now()
     @OneToMany
     var files: Set<MessageFile> = HashSet()
 

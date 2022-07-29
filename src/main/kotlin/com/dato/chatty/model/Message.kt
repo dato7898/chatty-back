@@ -1,6 +1,7 @@
 package com.dato.chatty.model
 
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonFormat
+import java.time.LocalDateTime
 import javax.persistence.*
 import kotlin.collections.HashSet
 
@@ -17,12 +18,8 @@ class Message(
     var deleted: Boolean = false
     @OneToMany(fetch = FetchType.EAGER)
     var files: Set<MessageFile> = HashSet()
-    @Column(name = "created_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var createdAt = Date()
-    @Column(name = "edited_at", columnDefinition = "timestamp with time zone")
-    @Temporal(TemporalType.TIMESTAMP)
-    var editedAt = Date()
+    var createdAt = LocalDateTime.now()
+    var editedAt = LocalDateTime.now()
     @ManyToMany
     var reads: Set<User> = HashSet()
     @ManyToMany
