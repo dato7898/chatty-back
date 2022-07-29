@@ -17,7 +17,11 @@ class Message(
     var deleted: Boolean = false
     @OneToMany(fetch = FetchType.EAGER)
     var files: Set<MessageFile> = HashSet()
+    @Column(name = "created_at", columnDefinition = "timestamp with time zone")
+    @Temporal(TemporalType.TIMESTAMP)
     var createdAt = Date()
+    @Column(name = "edited_at", columnDefinition = "timestamp with time zone")
+    @Temporal(TemporalType.TIMESTAMP)
     var editedAt = Date()
     @ManyToMany
     var reads: Set<User> = HashSet()

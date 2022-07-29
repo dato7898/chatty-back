@@ -15,7 +15,11 @@ class Room {
     var users: Set<User> = HashSet()
     var isMultiChat: Boolean = false
     var deleted: Boolean = false
+    @Column(name = "created_at", columnDefinition = "timestamp with time zone")
+    @Temporal(TemporalType.TIMESTAMP)
     var createdAt = Date()
+    @Column(name = "edited_at", columnDefinition = "timestamp with time zone")
+    @Temporal(TemporalType.TIMESTAMP)
     var editedAt = Date()
     @Transient
     @JsonInclude
