@@ -41,7 +41,11 @@ class FileService(
     ): MessageFile {
         val curUser = userService.getCurrentUser()
         val googleFileId = googleDriveService.uploadFile(fileName, contentType, fileContent)
-        val newFile = MessageFile(googleFileId, contentType, fileName, curUser.id)
+        val newFile = MessageFile()
+        newFile.googleFileId = googleFileId
+        newFile.contentType = contentType
+        newFile.fileName = fileName
+        newFile.senderId = curUser.id
         if (StringUtils.hasText(fileType)) {
             newFile.fileType = fileType
         }
