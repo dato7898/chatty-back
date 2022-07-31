@@ -11,7 +11,7 @@ type Message {
 
 input MetaMessage {
     text: String
-    files: [String]
+    files: [MetaMessageFile]
 }
 
 extend type Query {
