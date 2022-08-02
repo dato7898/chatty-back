@@ -38,12 +38,10 @@ class WebSocketEventListener(
         val currentAuthentication  = stompAccessor.getHeader("simpUser") as UsernamePasswordAuthenticationToken
         val curEmail = (currentAuthentication.principal as UserPrincipal).name
         val curUser = userRepo.findByEmail(curEmail).orElseThrow { ResourceNotFoundException("User", "email", curEmail) }
-        curUser.friends = emptySet()
-        curUser.online = true
         simpUserRegistry.users.stream()
             .map(SimpUser::getName)
             .forEach {
-                messagingTemplate.convertAndSendToUser(it, "/msg", WsMsgWrap(type, curUser))
+                messagingTemplate.convertAndSendToUser(it, "/msg", WsMsgWrap(type, curUser.id))
             }
     }
 
