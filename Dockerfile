@@ -4,5 +4,6 @@ RUN mvn -f /home/app/chatty/pom.xml clean package
 
 FROM openjdk:11-jre-slim
 COPY --from=build /home/app/chatty/target/application.jar /usr/local/lib/application.jar
+COPY --from=build /home/app/chatty/credentials.json /usr/local/lib/credentials.json
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/usr/local/lib/application.jar"]
